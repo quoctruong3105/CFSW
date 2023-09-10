@@ -2,8 +2,8 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 Item {
-    property color onClickedCoor: "#BBA68B"
-    property color defaultColor: root.defaultColor
+    property color onClickedCoor: root.defaultColor
+    property color defaultColor: "#BBA68B"
 
     function updateBtn(nameOn, nameOff) {
         menuView.stackView.clear()
@@ -17,9 +17,9 @@ Item {
     }
 
     Component.onCompleted: {
+        menuView.stackView.push(menuView.drinkPage)
         cakeBtnId.color = defaultColor
         drinkBtnId.color = onClickedCoor
-        menuView.stackView.push(menuView.drinkPage)
     }
 
     Column {
@@ -43,7 +43,9 @@ Item {
             }
             MouseArea {
                 anchors.fill: parent
-                onClicked: updateBtn(drinkBtnId, cakeBtnId)
+                onClicked: {
+                    updateBtn(drinkBtnId, cakeBtnId)
+                }
             }
         }
         Rectangle {

@@ -9,17 +9,27 @@ ApplicationWindow {
     height: Screen.height
     title: "Coffee Software"
     color: defaultColor
+    visibility: Window.FullScreen
+
 
     property color defaultColor: "#f5deb3"
 
     Core {id: core}
     Models {id: models}
+    ConfirmDialog {id: dialogs}
 
     Rectangle {
         id: containMenuView
         width: parent.width / 1.5
         height: parent.height - containBar.height
-        anchors.top: containBar.bottom
+        anchors {
+            top: containBar.bottom
+            left: parent.left
+            bottom: parent.bottom
+            leftMargin: parent.width / 250
+            bottomMargin: parent.width / 250
+        }
+
         MenuView {
             id: menuView
             width: parent.width
@@ -37,6 +47,7 @@ ApplicationWindow {
         }
 
         BillView {
+            id: billView
             width: parent.width
             height: parent.height
         }

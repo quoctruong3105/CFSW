@@ -6,6 +6,7 @@ Item {
     property alias drinkPageContent: drinkPageContent
     property alias cakePageContent: cakePageContent
     property alias cakePage: cakePage
+    property alias drinkPage: drinkPage
 
     StackView {
         id: stackView
@@ -19,7 +20,6 @@ Item {
 
         Page {
             id: drinkPage
-            title: "Drink"
             DrinkPageContent {
                 id: drinkPageContent
             }
@@ -27,7 +27,6 @@ Item {
 
         Page {
             id: cakePage
-            title: "Cake"
             CakePageCotent {
                 id: cakePageContent
             }

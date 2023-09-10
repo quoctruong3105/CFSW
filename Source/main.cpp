@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include "Include/DataHandler.h"
+#include <QIcon>
 
 
 int main(int argc, char *argv[])
@@ -21,6 +22,7 @@ int main(int argc, char *argv[])
                 QCoreApplication::exit(-1);
         }, Qt::QueuedConnection);
     engine.load(url);
-
+    QIcon icon(":/img/app_icon.ico");
+    app.setWindowIcon(icon);
     return app.exec();
 }

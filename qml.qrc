@@ -9,5 +9,6 @@
         <file>UI/CakePageCotent.qml</file>
         <file>UI/Core.qml</file>
         <file>UI/Models.qml</file>
+        <file>UI/ConfirmDialog.qml</file>
     </qresource>
 </RCC>
