@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>UI/Main.qml</file>
+        <file>UI/BillView.qml</file>
+        <file>UI/MenuView.qml</file>
+        <file>UI/OrderBar.qml</file>
+        <file>UI/SearchItem.qml</file>
+        <file>UI/DrinkPageContent.qml</file>
+        <file>UI/CakePageCotent.qml</file>
+        <file>UI/Core.qml</file>
+        <file>UI/Models.qml</file>
+    </qresource>
+</RCC>
