@@ -2,19 +2,31 @@ import QtQuick 2.15
 import QtQuick.Controls
 
 Item {
-    property alias totalCost: totalCost.text
-    property alias totalQualtity: totalQualtity.text
+    property int totalCostValue
+    property int totalQualtityValue
 
     function updateTime() {
         var now = new Date();
-        var day = ("0" + now.getDate()).slice(-2); // Zero-padding for day
-        var month = ("0" + (now.getMonth() + 1)).slice(-2); // Zero-padding for month (Note: Month is zero-based)
+        var day = ("0" + now.getDate()).slice(-2);
+        var month = ("0" + (now.getMonth() + 1)).slice(-2);
         var year = now.getFullYear();
-        var hours = ("0" + now.getHours()).slice(-2); // Zero-padding for hours
-        var minutes = ("0" + now.getMinutes()).slice(-2); // Zero-padding for minutes
+        var hours = ("0" + now.getHours()).slice(-2);
+        var minutes = ("0" + now.getMinutes()).slice(-2);
 
         dateTime.text = "Ngày tạo: " + day + "/" + month + "/" + year + " " + hours + ":" + minutes;
-     }
+    }
+
+
+    function updateTotal() {
+        totalCostValue = 0
+        for(var i = 0; i < models.selectModel.count; ++i) {
+            totalCostValue += (models.selectModel.get(i).cost + models.selectModel.get(i).extraCost) * models.selectModel.get(i).qualtity
+        }
+        totalQualtityValue = 0
+        for(var j = 0; j < models.selectModel.count; ++j) {
+            totalQualtityValue += models.selectModel.get(j).qualtity
+        }
+    }
 
     Timer {
         interval: 1000
@@ -57,6 +69,10 @@ Item {
                 Image {
                     anchors.fill: parent
                     source: "qrc:/img/app_icon.ico"
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: loginPage.isValid = false
                 }
             }
         }
@@ -144,16 +160,17 @@ Item {
                             id: item
                             height: billHeader.height
                             width: parent.width
-                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.horizontalCenter: parent.horizontalCenter                           
+                            property int index: model.index
                             Rectangle {
-                                id: cancelId
+                                id: removeContainer
                                 height: parent.height
                                 width: parent.width * 1 / 10
                                 anchors.left: parent.left
                                 anchors.margins: width / 20
                                 color: "transparent"
                                 Text {
-                                    id: cancelBtn
+                                    id: removeBtn
                                     text: "X"
                                     font.bold: true
                                     font.pointSize: parent.height / 3
@@ -164,8 +181,10 @@ Item {
                                     anchors.fill: parent
                                     onClicked: {
                                         for(var i = 0; i < models.selectModel.count; i++) {
-                                            if(models.selectModel.get(i).drink === drinkName.text) {
+                                            if(models.selectModel.get(i).drink === drinkName.text &&
+                                            models.selectModel.get(i).index === item.index) {
                                                 models.selectModel.remove(i)
+                                                break
                                             }
                                         }
                                     }
@@ -174,9 +193,10 @@ Item {
                             Rectangle {
                                 id: drinkNameContainer
                                 height: parent.height
-                                width: parent.width * 8 / 15
+                                width: parent.width * 8 / 25
+                                clip: true
                                 color: "transparent"
-                                anchors.left: cancelId.right
+                                anchors.left: removeContainer.right
                                 Text {
                                     id: drinkName
                                     text: model.drink
@@ -187,26 +207,29 @@ Item {
                                 }
                             }
                             Rectangle {
+                                id: toppingContainer
+                                width: factorContainer.width * 2
+                                height: factorContainer.height
+                                anchors.left: drinkNameContainer.right
+                                ToppingBox {
+                                    id: extraTopping
+                                    width: factor.width * 1.2
+                                    height: factor.height
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+                            }
+                            Rectangle {
                                 id: factorContainer
                                 height: parent.height
                                 width: parent.width * 2 / 15
                                 color: "transparent"
-                                anchors.left: drinkNameContainer.right
-                                SpinBox {
+                                anchors.left: toppingContainer.right
+                                anchors.leftMargin: width / 6.5
+                                QualtityBox {
                                     id: factor
-                                    from: 1
                                     height: parent.height * 2 / 3
                                     width: parent.width
                                     anchors.verticalCenter: parent.verticalCenter
-                                    onValueChanged: {
-                                        for(var i = 0; i < models.selectModel.count; ++i) {
-                                            if(models.selectModel.get(i).drink === drinkName.text) {
-                                                console.log(drinkName)
-                                                models.selectModel.setProperty(i, "qualtity", factor.value)
-                                                models.updateTotal()
-                                            }
-                                        }
-                                    }
                                 }
                             }
                             Rectangle {
@@ -217,7 +240,7 @@ Item {
                                 anchors.right: parent.right
                                 Text {
                                     id: cost
-                                    text: model.cost * factor.value + ".000"
+                                    text: (model.cost + model.extraCost) * factor.value + ".000"
                                     font.pointSize: drinkName.font.pointSize / 1.05
                                     anchors.verticalCenter: parent.verticalCenter
                                     anchors.horizontalCenter: parent.horizontalCenter
@@ -281,14 +304,14 @@ Item {
                     }
                     Text {
                         id: totalQualtity
-                        text: qsTr("0")
+                        text: totalQualtityValue
                         font.pointSize: dateTime.font.pointSize
                         anchors.top: parent.top
                         anchors.right: parent.right
                     }
                     Text {
                         id: totalCost
-                        text: qsTr("0.000")
+                        text: totalCostValue + ".000"
                         font.pointSize: dateTime.font.pointSize
                         anchors.bottom: parent.bottom
                         anchors.right: parent.right

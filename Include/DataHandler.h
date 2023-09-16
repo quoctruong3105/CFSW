@@ -16,14 +16,16 @@ public:
     DataHandle(QObject *parent = nullptr);
 signals:
 public slots:
-    void exeQuery(QString str);
-    QVariantMap getDrinkList(int i);
-    int getDrinkListLength();
+    void exeQuery(QString str, QString tableName);
+
+    QVariantMap getItemList(int i);
+    int getItemListLength();
+    void clearData();
+
+    void connect();
 private:
     static QSqlDatabase* db;
-    QList<QVariantMap> drinkList;
-    QSqlQuery queryMachine;
-    void connect();
+    QList<QVariantMap> itemList;
     void disconnect();
 };
 

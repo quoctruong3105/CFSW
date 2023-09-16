@@ -84,23 +84,21 @@ Item {
             }
             onCurrentValueChanged: {
                 search.searchTxt.text = ""
+                var tableName = "drinks"
                 if(currentValue === "Tất cả mặt hàng") {
                     models.drinkModel.clear()
-                    core.dh.exeQuery("")
-                    models.dummyData()
+                    core.dh.exeQuery("", tableName)
                 } else if(currentValue === "Sinh tố") {
                     models.drinkModel.clear()
-                    core.dh.exeQuery("sinh to")
-                    models.dummyData()
+                    core.dh.exeQuery("sinh to", tableName)
                 } else if(currentValue === "Nước ép") {
                     models.drinkModel.clear()
-                    core.dh.exeQuery("nuoc ep")
-                    models.dummyData()
+                    core.dh.exeQuery("nuoc ep", tableName)
                 } else if(currentValue === "Cà phê") {
                     models.drinkModel.clear()
-                    core.dh.exeQuery("ca phe")
-                    models.dummyData()
+                    core.dh.exeQuery("ca phe", tableName)
                 }
+                models.dummyData(models.drinkModel)
             }
         }
     }
@@ -130,8 +128,6 @@ Item {
                     id: drinkInfoContainer
                     width: gridView.cellWidth / 1.5
                     height: gridView.cellHeight / 1.5
-                    //anchors.bottomMargin: parent.height / 2
-                    //anchors.topMargin: 10
                     //color: index % 2 === 0 ? "lightblue" : "lightgray"
 
                     Row {
@@ -145,7 +141,6 @@ Item {
                             width: parent.height
                             height: width
                             radius: height / 5
-                            color: "lightgrey"
                             Image {
                                 anchors.fill: parent
                                 source: "qrc:/img/soda.png"
@@ -199,16 +194,8 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            var itemExists = false
-                            for (var i = 0; i < models.selectModel.count; i++) {
-                                if (models.selectModel.get(i).drink === drinkName.text) {
-                                    itemExists = true;
-                                    break;
-                                }
-                            }
-                            if (!itemExists) {
-                                models.selectModel.append({ "drink": drinkName.text, "cost": costName.text, "qualtity" : 1 });
-                            }
+                            models.selectModel.append({ "index" : 0, "drink": drinkName.text, "cost": parseFloat(costName.text.slice(0, costName.text.length - 4)),
+                                                        "qualtity" : 1, "add" : ({}), "extraCost" : 0 })
                         }
                     }
                 }
