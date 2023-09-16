@@ -5,7 +5,7 @@ DataHandle::DataHandle(QObject *parent) : QObject{parent} {
     this->connect();
 }
 
-void DataHandle::exeQuery(QString str)
+void DataHandle::exeQuery(QString str, QString tableName)
 {
     bool dbIsOpen = db->open();
 
@@ -14,11 +14,14 @@ void DataHandle::exeQuery(QString str)
         return;
     }
 
+    if(tableName.isEmpty()) {
+        return;
+    }
+
     QSqlQuery query;
-    drinkList.clear();
 
     if(str.isEmpty()) {
-        query.exec("SELECT * FROM drinks");
+        query.exec(QString("SELECT * FROM %1").arg(tableName));
     } else {
         QString newStr;
         for(int i = 0; i < str.length(); ++i) {
@@ -27,8 +30,7 @@ void DataHandle::exeQuery(QString str)
                 newStr += "%";
             }
         }
-        qDebug() << newStr;
-        query.exec(QString("SELECT * FROM drinks WHERE alias LIKE '%%1%'").arg(newStr));
+        query.exec(QString("SELECT * FROM %1 WHERE alias LIKE '%%2%'").arg(tableName, newStr));
     }
 
     if(query.lastError().isValid()) {
@@ -36,28 +38,40 @@ void DataHandle::exeQuery(QString str)
     }
 
     while (query.next()) {
-        QMap<QString, int> drinkMap;
-        drinkMap.insert(query.value(1).toString(), query.value(2).toInt());
-        for (auto it = drinkMap.begin(); it != drinkMap.end(); ++it) {
+        QMap<QString, int> map;
+        bool pos = 1;
+        if(tableName == "toppings") {
+            pos = 0;
+        }
+        map.insert(query.value(pos).toString(), query.value(2).toInt());
+        for (auto it = map.begin(); it != map.end(); ++it) {
             QVariantMap itemMap;
-            itemMap["drink"] = it.key();
+            if(tableName == "drinks") {
+                itemMap["drink"] = it.key();
+            } else if(tableName == "cakes") {
+                itemMap["cake"] = it.key();
+            } else {
+                itemMap["topping"] = it.key();
+            }
             itemMap["cost"] = it.value();
-            drinkList.append(itemMap);
+            itemList.append(itemMap);
         }
     }
-    for(int i = 0; i < drinkList.length(); i++) {
-        qDebug() << drinkList.at(i);
-    }
 }
 
-QVariantMap DataHandle::getDrinkList(int i)
+QVariantMap DataHandle::getItemList(int i)
 {
-    return drinkList.at(i);
+    return itemList.at(i);
 }
 
-int DataHandle::getDrinkListLength()
+int DataHandle::getItemListLength()
 {
-    return drinkList.length();
+    return itemList.length();
+}
+
+void DataHandle::clearData()
+{
+    itemList.clear();
 }
 
 

@@ -17,8 +17,8 @@ Item {
             }
             onTextEdited: {
                 models.drinkModel.clear()
-                core.dh.exeQuery(text)
-                models.dummyData()
+                core.dh.exeQuery(text, "drinks")
+                models.dummyData(models.drinkModel)
             }
         }
         Image {

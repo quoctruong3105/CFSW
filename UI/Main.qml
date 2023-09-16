@@ -9,7 +9,7 @@ ApplicationWindow {
     height: Screen.height
     title: "Coffee Software"
     color: defaultColor
-    visibility: Window.FullScreen
+    //visibility: Window.FullScreen
 
 
     property color defaultColor: "#f5deb3"

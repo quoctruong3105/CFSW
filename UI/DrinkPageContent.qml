@@ -84,23 +84,21 @@ Item {
             }
             onCurrentValueChanged: {
                 search.searchTxt.text = ""
+                var tableName = "drinks"
                 if(currentValue === "Tất cả mặt hàng") {
                     models.drinkModel.clear()
-                    core.dh.exeQuery("")
-                    models.dummyData()
+                    core.dh.exeQuery("", tableName)
                 } else if(currentValue === "Sinh tố") {
                     models.drinkModel.clear()
-                    core.dh.exeQuery("sinh to")
-                    models.dummyData()
+                    core.dh.exeQuery("sinh to", tableName)
                 } else if(currentValue === "Nước ép") {
                     models.drinkModel.clear()
-                    core.dh.exeQuery("nuoc ep")
-                    models.dummyData()
+                    core.dh.exeQuery("nuoc ep", tableName)
                 } else if(currentValue === "Cà phê") {
                     models.drinkModel.clear()
-                    core.dh.exeQuery("ca phe")
-                    models.dummyData()
+                    core.dh.exeQuery("ca phe", tableName)
                 }
+                models.dummyData(models.drinkModel)
             }
         }
     }

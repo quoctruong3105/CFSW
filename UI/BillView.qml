@@ -7,11 +7,11 @@ Item {
 
     function updateTime() {
         var now = new Date();
-        var day = ("0" + now.getDate()).slice(-2); // Zero-padding for day
-        var month = ("0" + (now.getMonth() + 1)).slice(-2); // Zero-padding for month (Note: Month is zero-based)
+        var day = ("0" + now.getDate()).slice(-2);
+        var month = ("0" + (now.getMonth() + 1)).slice(-2);
         var year = now.getFullYear();
-        var hours = ("0" + now.getHours()).slice(-2); // Zero-padding for hours
-        var minutes = ("0" + now.getMinutes()).slice(-2); // Zero-padding for minutes
+        var hours = ("0" + now.getHours()).slice(-2);
+        var minutes = ("0" + now.getMinutes()).slice(-2);
 
         dateTime.text = "Ngày tạo: " + day + "/" + month + "/" + year + " " + hours + ":" + minutes;
      }
@@ -174,7 +174,9 @@ Item {
                             Rectangle {
                                 id: drinkNameContainer
                                 height: parent.height
-                                width: parent.width * 8 / 15
+                                width: parent.width * 8 / 25
+                                clip: true
+                                //border.color: "black"
                                 color: "transparent"
                                 anchors.left: cancelId.right
                                 Text {
@@ -187,26 +189,29 @@ Item {
                                 }
                             }
                             Rectangle {
+                                id: topping
+                                width: factorContainer.width * 2
+                                height: factorContainer.height
+                                anchors.left: drinkNameContainer.right
+                                //border.color: "black"
+                                ToppingBox {
+                                    width: factor.width * 1.2
+                                    height: factor.height
+                                    anchors.verticalCenter: parent.verticalCenter
+                                }
+                            }
+                            Rectangle {
                                 id: factorContainer
                                 height: parent.height
                                 width: parent.width * 2 / 15
                                 color: "transparent"
-                                anchors.left: drinkNameContainer.right
-                                SpinBox {
+                                anchors.left: topping.right
+                                anchors.leftMargin: width / 6.5
+                                QualtityBox {
                                     id: factor
-                                    from: 1
                                     height: parent.height * 2 / 3
                                     width: parent.width
                                     anchors.verticalCenter: parent.verticalCenter
-                                    onValueChanged: {
-                                        for(var i = 0; i < models.selectModel.count; ++i) {
-                                            if(models.selectModel.get(i).drink === drinkName.text) {
-                                                console.log(drinkName)
-                                                models.selectModel.setProperty(i, "qualtity", factor.value)
-                                                models.updateTotal()
-                                            }
-                                        }
-                                    }
                                 }
                             }
                             Rectangle {

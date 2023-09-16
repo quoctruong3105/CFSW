@@ -6,6 +6,8 @@ Item {
     property alias drinkModel: drinkModel
     property alias cakeModel: cakeModel
     property alias selectModel: selectModel
+    property alias toppingModel: toppingModel
+    property var tableList: ["drinks", "toppings"]
 
     function updateTotal() {
         var totalCost = 0
@@ -24,15 +26,26 @@ Item {
     }
 
     Component.onCompleted: {
-        core.dh.exeQuery("")
-        dummyData()
+        for (var i = 0; i < tableList.length; ++i) {
+            var tableName = tableList[i];
+            var modelName
+            core.dh.exeQuery("", tableName)
+            if(tableName === "drinks") {
+                modelName = drinkModel
+            } else if(tableName === "toppings") {
+                modelName = toppingModel
+            } else {
+                modelName = cakeModel
+            }
+            dummyData(modelName);
+        }
     }
 
-    function dummyData() {
-        drinkModel.clear()
-        for (var i = 0; i < core.dh.getDrinkListLength(); ++i) {
-            drinkModel.append(core.dh.getDrinkList(i));
+    function dummyData(model) {
+        for (var i = 0; i < core.dh.getItemListLength(); ++i) {
+            model.append(core.dh.getItemList(i));
         }
+        core.dh.clearData()
     }
 
     ListModel {
@@ -44,5 +57,8 @@ Item {
     ListModel {
         id: selectModel
         onCountChanged: updateTotal()
+    }
+    ListModel {
+        id: toppingModel
     }
 }
