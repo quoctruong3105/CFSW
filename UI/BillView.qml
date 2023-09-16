@@ -4,16 +4,33 @@ import QtQuick.Controls
 Item {
     property int totalCostValue
     property int totalQualtityValue
+    property alias currentTime: dateTime
+    property alias billBackGround: billBackGround
+    property alias cardNo: cardNo
 
     function updateTime() {
         var now = new Date();
+        var day = ("0" + now.getDate()).slice(-2);
+        var month = ("0" + (now.getMonth() + 1)).slice(-2);
         var day = ("0" + now.getDate()).slice(-2);
         var month = ("0" + (now.getMonth() + 1)).slice(-2);
         var year = now.getFullYear();
         var hours = ("0" + now.getHours()).slice(-2);
         var minutes = ("0" + now.getMinutes()).slice(-2);
 
-        dateTime.text = "Ngày tạo: " + day + "/" + month + "/" + year + " " + hours + ":" + minutes;
+        dateTime.text = day + "/" + month + "/" + year + " " + hours + ":" + minutes;
+    }
+
+
+    function updateTotal() {
+        totalCostValue = 0
+        for(var i = 0; i < models.selectModel.count; ++i) {
+            totalCostValue += (models.selectModel.get(i).cost + models.selectModel.get(i).extraCost) * models.selectModel.get(i).qualtity
+        }
+        totalQualtityValue = 0
+        for(var j = 0; j < models.selectModel.count; ++j) {
+            totalQualtityValue += models.selectModel.get(j).qualtity
+        }
     }
 
 
@@ -44,57 +61,35 @@ Item {
         width: parent.width
         height: parent.height
         color: root.defaultColor
-        Rectangle {
-            width: mainBill.width
-            height: parent.height / 20
-            color: "transparent"
-            Text {
-                text: qsTr("HÓA ĐƠN")
-                font.bold: true
-                font.pointSize: parent.height / 2.5
-                anchors.top: parent.top
-            }
-            anchors{
-                horizontalCenter: parent.horizontalCenter
-                bottom: mainBill.top
-            }
-
-            Rectangle {
-                id: swIcon
-                height: parent.height / 1.2
-                width: height / 1.5
-                color: "transparent"
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                Image {
-                    anchors.fill: parent
-                    source: "qrc:/img/app_icon.ico"
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: loginPage.isValid = false
-                }
-            }
-        }
 
         Rectangle {
             id: mainBill
             width: parent.width / 1.05
-            height: parent.height / 1.05
+            height: parent.height
             anchors {
-                bottom: parent.bottom
+                top: parent.top
                 horizontalCenter: parent.horizontalCenter
             }
             Rectangle {
                 id: billHeader
                 width: parent.width
                 height: parent.height / 15
-                color: "lightgrey"
+                color: defaultColor
 
                 Text {
-                    anchors.fill: parent
-                    text: qsTr("Thông tin")
+                    text: qsTr("HÓA ĐƠN")
+                    font.bold: true
                     font.pointSize: parent.height / 3
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+
+                Rectangle {
+                    id: cfIcon
+                    height: parent.height / 1.2
+                    width: height / 1.5
+                    color: "transparent"
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
                 }
             }
             Rectangle {
@@ -107,15 +102,14 @@ Item {
                 }
                 Text {
                     id: dateTime
-                    x: payBtn.x
                     anchors {
                         verticalCenter: parent.verticalCenter
                     }
                     font.pointSize: parent.height / 3.75
                 }
                 Text {
-                    id: creater
-                    text: "Người tạo:  "
+                    id: cardTxt
+                    text: "Gắn thẻ  "
                     anchors {
                         left: dateTime.right
                         leftMargin: dateTime.height * 2
@@ -123,19 +117,110 @@ Item {
                     }
                     font.pointSize: dateTime.font.pointSize
                 }
-                ComboBox {
-                    font.pointSize: dateTime.font.pointSize
+                Rectangle {
+                    id: cardContainter
+                    width: height
+                    height: parent.height / 1.4
+                    border.color: "lightgrey"
                     anchors {
-                        left: creater.right
                         verticalCenter: parent.verticalCenter
+                        left: cardTxt.right
                     }
-                    model: ["admin 1", "admin 2", "admin 3"]
+
+                    Text {
+                        id: cardNo
+                        text: qsTr("0")
+                        font.pointSize: dateTime.font.pointSize
+                        anchors.centerIn: parent
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            cardValueContainer.popup.visible = !cardValueContainer.popup.visible;
+                        }
+                    }
                 }
+                ComboBox {
+                    id: cardValueContainer
+                    font.pointSize: dateTime.font.pointSize
+                    width: dateTime.font.pointSize * 12
+                    visible: false
+
+                    anchors {
+                        top: cardContainter.top
+                        verticalCenter: parent.verticalCenter
+                        horizontalCenter: cardContainter.horizontalCenter
+                    }
+
+                    property color chooseColor: "red"
+                    function setCardVal(val) {
+                        cardNo.text = val
+                    }
+
+                    model: ListModel {
+                        ListElement { text1: "1"; text2: "2"; text3: "3" }
+                        ListElement { text1: "4"; text2: "5"; text3: "6" }
+                        ListElement { text1: "7"; text2: "8"; text3: "9" }
+                        ListElement { text1: "10"; text2: "11"; text3: "12" }
+                        ListElement { text1: "13"; text2: "14"; text3: "15" }
+                        ListElement { text1: "16"; text2: "17"; text3: "18" }
+                        ListElement { text1: "19"; text2: "20"}
+                    }
+
+                    delegate: Rectangle {
+                        height: width / 3
+                        width: parent.width
+
+                        Row {
+                            anchors.fill: parent
+                            Rectangle {
+                                border.color: "lightgrey"
+                                width: parent.width / 3
+                                height: parent.height
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: model.text1
+                                }
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: cardValueContainer.setCardVal(model.text1)
+                                }
+                            }
+                            Rectangle {
+                                border.color: "lightgrey"
+                                width: parent.width / 3
+                                height: parent.height
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: model.text2
+                                }
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: cardValueContainer.setCardVal(model.text2)
+                                }
+                            }
+                            Rectangle {
+                                border.color: "lightgrey"
+                                width: parent.width / 3
+                                height: parent.height
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: model.text3
+                                }
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: cardValueContainer.setCardVal(model.text3)
+                                }
+                            }
+                        }
+                    }
+                }
+
             }
             Rectangle {
                 id: itemSelection
                 width: parent.width / 1.05
-                height: billHeader.height * 10
+                height: billHeader.height * 8
                 border {
                     color: "lightgrey"
                     width: dateTimeContainer.height / 20
@@ -162,7 +247,10 @@ Item {
                             width: parent.width
                             anchors.horizontalCenter: parent.horizontalCenter                           
                             property int index: model.index
+                            anchors.horizontalCenter: parent.horizontalCenter                           
+                            property int index: model.index
                             Rectangle {
+                                id: removeContainer
                                 id: removeContainer
                                 height: parent.height
                                 width: parent.width * 1 / 10
@@ -170,6 +258,7 @@ Item {
                                 anchors.margins: width / 20
                                 color: "transparent"
                                 Text {
+                                    id: removeBtn
                                     id: removeBtn
                                     text: "X"
                                     font.bold: true
@@ -183,7 +272,10 @@ Item {
                                         for(var i = 0; i < models.selectModel.count; i++) {
                                             if(models.selectModel.get(i).drink === drinkName.text &&
                                             models.selectModel.get(i).index === item.index) {
+                                            if(models.selectModel.get(i).drink === drinkName.text &&
+                                            models.selectModel.get(i).index === item.index) {
                                                 models.selectModel.remove(i)
+                                                break
                                                 break
                                             }
                                         }
@@ -194,13 +286,14 @@ Item {
                                 id: drinkNameContainer
                                 height: parent.height
                                 width: parent.width * 8 / 25
-                                clip: true
+                                //border.color: "black"
                                 color: "transparent"
+                                anchors.left: removeContainer.right
                                 anchors.left: removeContainer.right
                                 Text {
                                     id: drinkName
                                     text: model.drink
-                                    font.pointSize: parent.height / 5
+                                    font.pointSize: parent.height / 6
                                     anchors {
                                         verticalCenter: parent.verticalCenter
                                     }
@@ -211,6 +304,7 @@ Item {
                                 width: factorContainer.width * 2
                                 height: factorContainer.height
                                 anchors.left: drinkNameContainer.right
+                                anchors.leftMargin: width / 12
                                 ToppingBox {
                                     id: extraTopping
                                     width: factor.width * 1.2
@@ -224,7 +318,7 @@ Item {
                                 width: parent.width * 2 / 15
                                 color: "transparent"
                                 anchors.left: toppingContainer.right
-                                anchors.leftMargin: width / 6.5
+                                anchors.leftMargin: width / 7
                                 QualtityBox {
                                     id: factor
                                     height: parent.height * 2 / 3
@@ -241,7 +335,7 @@ Item {
                                 Text {
                                     id: cost
                                     text: (model.cost + model.extraCost) * factor.value + ".000"
-                                    font.pointSize: drinkName.font.pointSize / 1.05
+                                    font.pointSize: drinkName.font.pointSize
                                     anchors.verticalCenter: parent.verticalCenter
                                     anchors.horizontalCenter: parent.horizontalCenter
                                 }
@@ -272,6 +366,18 @@ Item {
                         font {
                             bold: true
                             pointSize: payContainer.height / 8
+                        }
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            var itemModel = models.selectModel
+                            for (var i = 0; i < itemModel.count; ++i) {
+                                var itemData = itemModel.get(i); // Assuming itemModel.get(i) returns an object with the required properties
+
+                                // Call the C++ function with the correct argument order and data types
+                                core.billGen.collectItemInfo(itemData.index, itemData.drink, itemData.cost, itemData.quantity, itemData.add);
+                            }
                         }
                     }
                 }
@@ -305,6 +411,7 @@ Item {
                     Text {
                         id: totalQualtity
                         text: totalQualtityValue
+                        text: totalQualtityValue
                         font.pointSize: dateTime.font.pointSize
                         anchors.top: parent.top
                         anchors.right: parent.right
@@ -312,10 +419,32 @@ Item {
                     Text {
                         id: totalCost
                         text: totalCostValue + ".000"
+                        text: totalCostValue + ".000"
                         font.pointSize: dateTime.font.pointSize
                         anchors.bottom: parent.bottom
                         anchors.right: parent.right
                     }
+                }
+            }
+            Rectangle {
+                id: billFooter
+                height: parent.height / 30
+                width: itemSelection.width
+                anchors.bottom: parent.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
+                Image {
+                    id: swIcon
+                    height: parent.height / 1.2
+                    width: height / 1.5
+                    source: "qrc:/img/app_icon.ico"
+                    anchors.right: parent.right
+                }
+                Text {
+                    font.pointSize: parent.height / 3
+                    text: qsTr("CFSW v1.0  |  Powered by T&T Studio")
+                    anchors.right: swIcon.left
+                    anchors.verticalCenter: swIcon.verticalCenter
+                    anchors.rightMargin: width / 15
                 }
             }
         }

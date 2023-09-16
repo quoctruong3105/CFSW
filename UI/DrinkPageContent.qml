@@ -85,19 +85,21 @@ Item {
             onCurrentValueChanged: {
                 search.searchTxt.text = ""
                 var tableName = "drinks"
+                var tableName = "drinks"
                 if(currentValue === "Tất cả mặt hàng") {
                     models.drinkModel.clear()
-                    core.dh.exeQuery("", tableName)
+                    core.dh.queryItem("", tableName)
                 } else if(currentValue === "Sinh tố") {
                     models.drinkModel.clear()
-                    core.dh.exeQuery("sinh to", tableName)
+                    core.dh.queryItem("sinh to", tableName)
                 } else if(currentValue === "Nước ép") {
                     models.drinkModel.clear()
-                    core.dh.exeQuery("nuoc ep", tableName)
+                    core.dh.queryItem("nuoc ep", tableName)
                 } else if(currentValue === "Cà phê") {
                     models.drinkModel.clear()
-                    core.dh.exeQuery("ca phe", tableName)
+                    core.dh.queryItem("ca phe", tableName)
                 }
+                models.dummyData(models.drinkModel)
                 models.dummyData(models.drinkModel)
             }
         }
@@ -114,15 +116,14 @@ Item {
             anchors.fill: parent
             contentWidth: stackView.width
             contentHeight: stackView.height
-            height: parent
             GridView {
                 id: gridView
-                width: stackView.width
-                height: stackView.height
+                width: parent.width
+                height: parent.height / 1.2
                 cellWidth: stackView.width / numOfItemOneRow
-                cellHeight: (cellWidth / 1.2) / numOfItemOneRow
+                cellHeight: (cellWidth) / numOfItemOneRow
                 model: models.drinkModel
-                property int size: gridView.cellHeight
+                clip: true
 
                 delegate: Rectangle {
                     id: drinkInfoContainer
@@ -164,12 +165,12 @@ Item {
                                         id: drinkName
                                         text: model.drink.toUpperCase()
                                         font {
-                                            pointSize: drinkImg.height / 5.5
+                                            pointSize: drinkImg.height / 6
                                             bold: true
                                         }
                                         anchors.top: textInfoContainer.top
                                         wrapMode: Text.WordWrap
-                                        width: 20 * drinkName.font.pointSize
+                                        width: 12 * drinkName.font.pointSize
                                     }
                                 }
                                 Rectangle {
@@ -194,17 +195,18 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            models.selectModel.append({ "index" : 0, "drink": drinkName.text, "cost": parseFloat(costName.text.slice(0, costName.text.length - 4)),
+                            models.selectModel.append({ "index" : 0, "drink": drinkName.text,
+                                                        "cost": parseFloat(costName.text.slice(0, costName.text.length - 4)),
                                                         "qualtity" : 1, "add" : ({}), "extraCost" : 0 })
                         }
                     }
                 }
             }
 
-            ScrollBar.vertical: ScrollBar {
-                policy: ScrollBar.AsNeeded
-                size: flickable.contentHeight / flickable.height
-            }
+//            ScrollBar.vertical: ScrollBar {
+//                policy: ScrollBar.AsNeeded
+//                size: flickable.contentHeight / flickable.height
+//            }
         }
     }
 }

@@ -51,7 +51,7 @@ Item {
             width: parent.width / 2.5
             height: parent.height
             anchors.verticalCenter: spinBoxContainer.verticalCenter
-            anchors.right: spinBoxContainer.left
+            anchors.left: spinBoxContainer.right
             onClicked: incrementSpinBox()
         }
 
@@ -62,7 +62,7 @@ Item {
             width: parent.width / 2.5
             height: parent.height
             anchors.verticalCenter: spinBoxContainer.verticalCenter
-            anchors.left: spinBoxContainer.right
+            anchors.right: spinBoxContainer.left
             onClicked: decrementSpinBox()
         }
 

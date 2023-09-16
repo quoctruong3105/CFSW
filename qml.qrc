@@ -13,5 +13,6 @@
         <file>UI/ToppingBox.qml</file>
         <file>UI/QualtityBox.qml</file>
         <file>UI/LoginPage.qml</file>
+        <file>UI/FeatureGrpBtn.qml</file>
     </qresource>
 </RCC>

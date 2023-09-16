@@ -9,11 +9,18 @@ Item {
     property alias toppingModel: toppingModel
     property alias accModel: accModel
     property var tableList: ["drinks", "toppings", "accounts"]
+    property alias toppingModel: toppingModel
+    property alias accModel: accModel
+    property var tableList: ["drinks", "toppings", "accounts"]
 
     function dummyData(model) {
         for (var i = 0; i < core.dh.getItemListLength(); ++i) {
             model.append(core.dh.getItemList(i));
+    function dummyData(model) {
+        for (var i = 0; i < core.dh.getItemListLength(); ++i) {
+            model.append(core.dh.getItemList(i));
         }
+        core.dh.clearData()
         core.dh.clearData()
     }
 
@@ -21,7 +28,7 @@ Item {
         for (var i = 0; i < tableList.length; ++i) {
             var tableName = tableList[i];
             var modelName
-            core.dh.exeQuery("", tableName)
+            core.dh.queryItem("", tableName)
             if(tableName === "drinks") {
                 modelName = drinkModel
             } else if(tableName === "toppings") {
@@ -39,6 +46,10 @@ Item {
     ListModel {
         id: accModel
     }
+
+    ListModel {
+        id: accModel
+    }
     ListModel {
         id: drinkModel
     }
@@ -49,7 +60,16 @@ Item {
         id: toppingModel
     }
     ListModel {
+        id: toppingModel
+    }
+    ListModel {
         id: selectModel
+        onCountChanged: {
+            billView.updateTotal()
+            for(var i = 1; i < selectModel.count; i++) {
+                selectModel.setProperty(i, "index", i)
+            }
+        }
         onCountChanged: {
             billView.updateTotal()
             for(var i = 1; i < selectModel.count; i++) {

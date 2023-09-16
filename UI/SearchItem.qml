@@ -17,7 +17,7 @@ Item {
             }
             onTextEdited: {
                 models.drinkModel.clear()
-                core.dh.exeQuery(text, "drinks")
+                core.dh.queryItem(text, "drinks")
                 models.dummyData(models.drinkModel)
             }
         }
@@ -33,6 +33,13 @@ Item {
                 left: searchField.right
                 leftMargin: height / 2
                 top: searchField.top
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    console.log("1")
+                    core.billGen.printBill()
+                }
             }
         }
     }

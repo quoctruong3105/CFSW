@@ -16,7 +16,8 @@ public:
     DataHandle(QObject *parent = nullptr);
 signals:
 public slots:
-    void exeQuery(QString str, QString tableName);
+    void queryItem(QString str, QString tableName);
+    void updateAccLog(bool, QString, QString);
 
     QVariantMap getItemList(int i);
     int getItemListLength();

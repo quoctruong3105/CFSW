@@ -42,6 +42,8 @@ Rectangle {
                     if(usernameInput.text === models.accModel.get(i).username) {
                         if(passwordInput.text === models.accModel.get(i).password) {
                             isValid = 1
+                            core.currentAcc.setCurrentUser(usernameInput.text)
+                            core.dh.updateAccLog(true, billView.currentTime.text, core.currentAcc.getCurrentUser())
                             usernameInput.text = ""
                             passwordInput.text = ""
                             errorLogin.text = ""

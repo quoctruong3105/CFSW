@@ -5,7 +5,7 @@ DataHandle::DataHandle(QObject *parent) : QObject{parent} {
     this->connect();
 }
 
-void DataHandle::exeQuery(QString str, QString tableName)
+void DataHandle::queryItem(QString str, QString tableName)
 {
 //    if(!db) {
 //        this->connect();
@@ -23,9 +23,14 @@ void DataHandle::exeQuery(QString str, QString tableName)
         return;
     }
 
+    if(tableName.isEmpty()) {
+        return;
+    }
+
     QSqlQuery query;
 
     if(str.isEmpty()) {
+        query.exec(QString("SELECT * FROM %1").arg(tableName));
         query.exec(QString("SELECT * FROM %1").arg(tableName));
     } else {
         QString newStr;
@@ -36,6 +41,7 @@ void DataHandle::exeQuery(QString str, QString tableName)
             }
         }
         query.exec(QString("SELECT * FROM %1 WHERE alias LIKE '%%2%'").arg(tableName, newStr));
+        query.exec(QString("SELECT * FROM %1 WHERE alias LIKE '%%2%'").arg(tableName, newStr));
     }
 
     if(query.lastError().isValid()) {
@@ -43,6 +49,19 @@ void DataHandle::exeQuery(QString str, QString tableName)
     }
 
     while (query.next()) {
+        QMap<QString, QVariant> map;
+        bool pos = 1;
+        if(tableName == "toppings") {
+            pos = 0;
+        }
+
+        if(tableName == "accounts") {
+            map.insert(query.value(pos).toString(), query.value(2).toString());
+        } else {
+            map.insert(query.value(pos).toString(), query.value(2).toInt());
+        }
+
+        for (auto it = map.begin(); it != map.end(); ++it) {
         QMap<QString, QVariant> map;
         bool pos = 1;
         if(tableName == "toppings") {
@@ -72,8 +91,47 @@ void DataHandle::exeQuery(QString str, QString tableName)
                 itemMap["cost"] = it.value();
             }
             itemList.append(itemMap);
+            if(tableName == "drinks") {
+                itemMap["drink"] = it.key();
+            } else if(tableName == "cakes") {
+                itemMap["cake"] = it.key();
+            } else if(tableName == "toppings") {
+                itemMap["topping"] = it.key();
+            } else {
+                itemMap["username"] = it.key();
+                itemMap["password"] = it.value();
+            }
+
+            if(tableName != "accounts") {
+                itemMap["cost"] = it.value();
+            }
+            itemList.append(itemMap);
         }
     }
+}
+
+void DataHandle::updateAccLog(bool isLogIn, QString time, QString username)
+{
+    bool dbIsOpen = db->open();
+
+    if(!dbIsOpen) {
+        qDebug() << "Database is closing";
+        return;
+    }
+
+    QSqlQuery query;
+    QString colName = isLogIn ? "last_login" : "last_logout";
+
+    query.prepare(QString("UPDATE accounts SET %1 = :time WHERE username = :username").arg(colName));
+    query.bindValue(":time", time);
+    query.bindValue(":username", username);
+
+    if (!query.exec()) {
+        qDebug() << "Error updating " << colName << ": " << query.lastError().text();
+        return;
+    }
+
+    qDebug() << "Update successful";
 }
 
 QVariantMap DataHandle::getItemList(int i)
@@ -82,12 +140,16 @@ QVariantMap DataHandle::getItemList(int i)
 }
 
 int DataHandle::getItemListLength()
+int DataHandle::getItemListLength()
 {
+    return itemList.length();
     return itemList.length();
 }
 
 void DataHandle::clearData()
+void DataHandle::clearData()
 {
+    itemList.clear();
     itemList.clear();
 }
 
@@ -101,7 +163,19 @@ void DataHandle::connect() {
 
 //    qDebug() << "bbbb";
 
+//    qDebug() << "bbbb";
+
     db = new QSqlDatabase(QSqlDatabase::addDatabase("QPSQL"));
+//    db->setHostName("113.172.103.8");
+//    db->setPort(5432);
+//    db->setDatabaseName("hi_cf_db");
+//    db->setUserName("hicf3105");
+//    db->setPassword("TruongquoC3105vt@#");
+        db->setHostName("localhost");
+        db->setPort(5432);
+        db->setDatabaseName("cf_prj");
+        db->setUserName("truong");
+        db->setPassword("truong");
 //    db->setHostName("113.172.103.8");
 //    db->setPort(5432);
 //    db->setDatabaseName("hi_cf_db");
@@ -117,6 +191,7 @@ void DataHandle::connect() {
         qDebug() << "Error connecting to PostgreSQL:";
         qDebug() << "Connection Name:" << db->connectionName();
         qDebug() << "Connection Options:" << db->connectOptions();
+        return;
         return;
     } else {
         qDebug() << "Connected to PostgreSQL!";
