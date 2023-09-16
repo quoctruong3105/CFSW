@@ -6,35 +6,39 @@ Item {
     property alias drinkModel: drinkModel
     property alias cakeModel: cakeModel
     property alias selectModel: selectModel
+    property alias toppingModel: toppingModel
+    property alias accModel: accModel
+    property var tableList: ["drinks", "toppings", "accounts"]
 
-    function updateTotal() {
-        var totalCost = 0
-        var totalQualtity = 0
-        for(var i = 0; i < selectModel.count; i++) {
-            var costString = selectModel.get(i).cost;
-            totalQualtity +=  selectModel.get(i).qualtity
-            var costValue = parseFloat(costString.slice(0, costString.length - 4)) * selectModel.get(i).qualtity
-
-            if (!isNaN(costValue)) {
-                totalCost += costValue;
-            }
+    function dummyData(model) {
+        for (var i = 0; i < core.dh.getItemListLength(); ++i) {
+            model.append(core.dh.getItemList(i));
         }
-        billView.totalCost = totalCost + ".000"
-        billView.totalQualtity = totalQualtity
+        core.dh.clearData()
     }
 
     Component.onCompleted: {
-        core.dh.exeQuery("")
-        dummyData()
-    }
-
-    function dummyData() {
-        drinkModel.clear()
-        for (var i = 0; i < core.dh.getDrinkListLength(); ++i) {
-            drinkModel.append(core.dh.getDrinkList(i));
+        for (var i = 0; i < tableList.length; ++i) {
+            var tableName = tableList[i];
+            var modelName
+            core.dh.exeQuery("", tableName)
+            if(tableName === "drinks") {
+                modelName = drinkModel
+            } else if(tableName === "toppings") {
+                modelName = toppingModel
+            } else if(tableName === "cakes"){
+                modelName = cakeModel
+            } else if(tableName === "accounts"){
+                modelName = accModel
+            }
+            dummyData(modelName);
         }
     }
 
+
+    ListModel {
+        id: accModel
+    }
     ListModel {
         id: drinkModel
     }
@@ -42,7 +46,15 @@ Item {
         id: cakeModel
     }
     ListModel {
+        id: toppingModel
+    }
+    ListModel {
         id: selectModel
-        onCountChanged: updateTotal()
+        onCountChanged: {
+            billView.updateTotal()
+            for(var i = 1; i < selectModel.count; i++) {
+                selectModel.setProperty(i, "index", i)
+            }
+        }
     }
 }
