@@ -84,23 +84,21 @@ Item {
             }
             onCurrentValueChanged: {
                 search.searchTxt.text = ""
+                var tableName = "drinks"
                 if(currentValue === "Tất cả mặt hàng") {
                     models.drinkModel.clear()
-                    core.dh.exeQuery("")
-                    models.dummyData()
+                    core.dh.queryItem("", tableName)
                 } else if(currentValue === "Sinh tố") {
                     models.drinkModel.clear()
-                    core.dh.exeQuery("sinh to")
-                    models.dummyData()
+                    core.dh.queryItem("sinh to", tableName)
                 } else if(currentValue === "Nước ép") {
                     models.drinkModel.clear()
-                    core.dh.exeQuery("nuoc ep")
-                    models.dummyData()
+                    core.dh.queryItem("nuoc ep", tableName)
                 } else if(currentValue === "Cà phê") {
                     models.drinkModel.clear()
-                    core.dh.exeQuery("ca phe")
-                    models.dummyData()
+                    core.dh.queryItem("ca phe", tableName)
                 }
+                models.dummyData(models.drinkModel)
             }
         }
     }
@@ -116,22 +114,19 @@ Item {
             anchors.fill: parent
             contentWidth: stackView.width
             contentHeight: stackView.height
-            height: parent
             GridView {
                 id: gridView
-                width: stackView.width
-                height: stackView.height
+                width: parent.width
+                height: parent.height / 1.2
                 cellWidth: stackView.width / numOfItemOneRow
-                cellHeight: (cellWidth / 1.2) / numOfItemOneRow
+                cellHeight: (cellWidth) / numOfItemOneRow
                 model: models.drinkModel
-                property int size: gridView.cellHeight
+                clip: true
 
                 delegate: Rectangle {
                     id: drinkInfoContainer
                     width: gridView.cellWidth / 1.5
                     height: gridView.cellHeight / 1.5
-                    //anchors.bottomMargin: parent.height / 2
-                    //anchors.topMargin: 10
                     //color: index % 2 === 0 ? "lightblue" : "lightgray"
 
                     Row {
@@ -145,7 +140,6 @@ Item {
                             width: parent.height
                             height: width
                             radius: height / 5
-                            color: "lightgrey"
                             Image {
                                 anchors.fill: parent
                                 source: "qrc:/img/soda.png"
@@ -169,12 +163,12 @@ Item {
                                         id: drinkName
                                         text: model.drink.toUpperCase()
                                         font {
-                                            pointSize: drinkImg.height / 5.5
+                                            pointSize: drinkImg.height / 6
                                             bold: true
                                         }
                                         anchors.top: textInfoContainer.top
                                         wrapMode: Text.WordWrap
-                                        width: 20 * drinkName.font.pointSize
+                                        width: 12 * drinkName.font.pointSize
                                     }
                                 }
                                 Rectangle {
@@ -199,25 +193,18 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            var itemExists = false
-                            for (var i = 0; i < models.selectModel.count; i++) {
-                                if (models.selectModel.get(i).drink === drinkName.text) {
-                                    itemExists = true;
-                                    break;
-                                }
-                            }
-                            if (!itemExists) {
-                                models.selectModel.append({ "drink": drinkName.text, "cost": costName.text, "qualtity" : 1 });
-                            }
+                            models.selectModel.append({ "index" : 0, "drink": drinkName.text,
+                                                        "cost": parseFloat(costName.text.slice(0, costName.text.length - 4)),
+                                                        "qualtity" : 1, "add" : ({}), "extraCost" : 0 })
                         }
                     }
                 }
             }
 
-            ScrollBar.vertical: ScrollBar {
-                policy: ScrollBar.AsNeeded
-                size: flickable.contentHeight / flickable.height
-            }
+//            ScrollBar.vertical: ScrollBar {
+//                policy: ScrollBar.AsNeeded
+//                size: flickable.contentHeight / flickable.height
+//            }
         }
     }
 }

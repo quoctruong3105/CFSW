@@ -1,8 +1,10 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include "Include/DataHandler.h"
 #include <QIcon>
+#include "Include/DataHandler.h"
+#include "Include/Account.h"
+#include "Include/BillGenerator.h"
 
 
 int main(int argc, char *argv[])
@@ -14,6 +16,9 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
     qmlRegisterType<DataHandle>("Qt.DataHandle.Module", 1, 0, "DataHandler");
+    qmlRegisterType<Account>("Qt.Account.Module", 1, 0, "Account");
+    qmlRegisterType<BillGenerator>("Qt.BillGenerator.Module", 1, 0, "BillGenerator");
+
 
     const QUrl url(QStringLiteral("qrc:/UI/Main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

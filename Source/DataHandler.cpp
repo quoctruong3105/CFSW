@@ -5,7 +5,78 @@ DataHandle::DataHandle(QObject *parent) : QObject{parent} {
     this->connect();
 }
 
-void DataHandle::exeQuery(QString str)
+void DataHandle::queryItem(QString str, QString tableName)
+{
+//    if(!db) {
+//        this->connect();
+//        qDebug() << "aaaa";
+//    }
+
+    bool dbIsOpen = db->open();
+
+    if(!dbIsOpen) {
+        qDebug() << "Database is closing";
+        return;
+    }
+
+    if(tableName.isEmpty()) {
+        return;
+    }
+
+    QSqlQuery query;
+
+    if(str.isEmpty()) {
+        query.exec(QString("SELECT * FROM %1").arg(tableName));
+    } else {
+        QString newStr;
+        for(int i = 0; i < str.length(); ++i) {
+            newStr += str[i];
+            if(i < str.length() - 1) {
+                newStr += "%";
+            }
+        }
+        query.exec(QString("SELECT * FROM %1 WHERE alias LIKE '%%2%'").arg(tableName, newStr));
+    }
+
+    if(query.lastError().isValid()) {
+        return;
+    }
+
+    while (query.next()) {
+        QMap<QString, QVariant> map;
+        bool pos = 1;
+        if(tableName == "toppings") {
+            pos = 0;
+        }
+
+        if(tableName == "accounts") {
+            map.insert(query.value(pos).toString(), query.value(2).toString());
+        } else {
+            map.insert(query.value(pos).toString(), query.value(2).toInt());
+        }
+
+        for (auto it = map.begin(); it != map.end(); ++it) {
+            QVariantMap itemMap;
+            if(tableName == "drinks") {
+                itemMap["drink"] = it.key();
+            } else if(tableName == "cakes") {
+                itemMap["cake"] = it.key();
+            } else if(tableName == "toppings") {
+                itemMap["topping"] = it.key();
+            } else {
+                itemMap["username"] = it.key();
+                itemMap["password"] = it.value();
+            }
+
+            if(tableName != "accounts") {
+                itemMap["cost"] = it.value();
+            }
+            itemList.append(itemMap);
+        }
+    }
+}
+
+void DataHandle::updateAccLog(bool isLogIn, QString time, QString username)
 {
     bool dbIsOpen = db->open();
 
@@ -15,49 +86,33 @@ void DataHandle::exeQuery(QString str)
     }
 
     QSqlQuery query;
-    drinkList.clear();
+    QString colName = isLogIn ? "last_login" : "last_logout";
 
-    if(str.isEmpty()) {
-        query.exec("SELECT * FROM drinks");
-    } else {
-        QString newStr;
-        for(int i = 0; i < str.length(); ++i) {
-            newStr += str[i];
-            if(i < str.length() - 1) {
-                newStr += "%";
-            }
-        }
-        qDebug() << newStr;
-        query.exec(QString("SELECT * FROM drinks WHERE alias LIKE '%%1%'").arg(newStr));
-    }
+    query.prepare(QString("UPDATE accounts SET %1 = :time WHERE username = :username").arg(colName));
+    query.bindValue(":time", time);
+    query.bindValue(":username", username);
 
-    if(query.lastError().isValid()) {
+    if (!query.exec()) {
+        qDebug() << "Error updating " << colName << ": " << query.lastError().text();
         return;
     }
 
-    while (query.next()) {
-        QMap<QString, int> drinkMap;
-        drinkMap.insert(query.value(1).toString(), query.value(2).toInt());
-        for (auto it = drinkMap.begin(); it != drinkMap.end(); ++it) {
-            QVariantMap itemMap;
-            itemMap["drink"] = it.key();
-            itemMap["cost"] = it.value();
-            drinkList.append(itemMap);
-        }
-    }
-    for(int i = 0; i < drinkList.length(); i++) {
-        qDebug() << drinkList.at(i);
-    }
+    qDebug() << "Update successful";
 }
 
-QVariantMap DataHandle::getDrinkList(int i)
+QVariantMap DataHandle::getItemList(int i)
 {
-    return drinkList.at(i);
+    return itemList.at(i);
 }
 
-int DataHandle::getDrinkListLength()
+int DataHandle::getItemListLength()
 {
-    return drinkList.length();
+    return itemList.length();
+}
+
+void DataHandle::clearData()
+{
+    itemList.clear();
 }
 
 
@@ -68,17 +123,25 @@ void DataHandle::connect() {
         return;
     }
 
+//    qDebug() << "bbbb";
+
     db = new QSqlDatabase(QSqlDatabase::addDatabase("QPSQL"));
-    db->setHostName("127.0.0.1");
-    db->setPort(5432);
-    db->setDatabaseName("cf_prj");
-    db->setUserName("truong");
-    db->setPassword("truong");
+//    db->setHostName("113.172.103.8");
+//    db->setPort(5432);
+//    db->setDatabaseName("hi_cf_db");
+//    db->setUserName("hicf3105");
+//    db->setPassword("TruongquoC3105vt@#");
+        db->setHostName("localhost");
+        db->setPort(5432);
+        db->setDatabaseName("cf_prj");
+        db->setUserName("truong");
+        db->setPassword("truong");
     if (!db->open()) {
         QSqlError error = db->lastError();
         qDebug() << "Error connecting to PostgreSQL:";
         qDebug() << "Connection Name:" << db->connectionName();
         qDebug() << "Connection Options:" << db->connectOptions();
+        return;
     } else {
         qDebug() << "Connected to PostgreSQL!";
     }
