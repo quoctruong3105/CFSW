@@ -66,8 +66,8 @@ Item {
         id: selectModel
         onCountChanged: {
             billView.updateTotal()
-            for(var i = 1; i < selectModel.count; i++) {
-                selectModel.setProperty(i, "index", i)
+            for(var i = 0; i < selectModel.count; i++) {
+                selectModel.setProperty(i, "index", i + 1)
             }
         }
         onCountChanged: {
