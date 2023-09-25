@@ -4,24 +4,48 @@ BillGenerator::BillGenerator(QObject *parent) : QObject{parent} {
 
 }
 
-void BillGenerator::collectItemInfo(int id, QString name, int cost, int qualtity, const QVariantMap &extra)
+void BillGenerator::collectItemInfo(int id, QString name, int cost, int quantity, const QString &extraJson)
 {
     ItemModel item;
     item.id = id;
     item.name = name;
     item.cost = cost;
-    item.quatity = qualtity;
-
+    item.quantity = quantity;
+    qDebug() << item.id << "\t" << item.name << "\t\t" << item.cost << "\t" << item.quantity;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(extraJson.toUtf8());
+    QVariantMap extra = jsonDoc.toVariant().toMap();
     for(auto topping = extra.constBegin(); topping != extra.constEnd(); topping++) {
-        item.toppings.insert(topping.key(), topping.value());
+        QString tpName = topping.key();
+        int tpCost = topping.value().toInt();
+        item.toppings.insert(tpName, tpCost);
+        qDebug() << tpName << "  " << tpCost;
     }
 }
 
 void BillGenerator::print()
 {
-    for (auto var = listItem.begin(); var != listItem.end() ;++var) {
-        qDebug() << var;
+    for (const ItemModel &it : listItem) {
+        qDebug() << it.id << "\t" << it.name << "\t" << it.cost << "\t" << it.quantity;
+
+        // Access and iterate through the list of QVariantMap for each ItemModel
+        for (const QVariant &variant : it.toppings) {
+            if (variant.canConvert<QVariantMap>()) {
+                QVariantMap map = variant.toMap();
+
+                // Process the QVariantMap as needed
+                for (auto mapIter = map.constBegin(); mapIter != map.constEnd(); ++mapIter) {
+                    qDebug() << "Topping Key:" << mapIter.key() << "\tTopping Value:" << mapIter.value();
+                }
+            } else {
+                qDebug() << "Toppings variant cannot be converted to QVariantMap.";
+            }
+        }
     }
+}
+
+void BillGenerator::clearListItem()
+{
+    this->listItem.clear();
 }
 
 void BillGenerator::printBill()

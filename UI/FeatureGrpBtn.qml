@@ -20,6 +20,7 @@ Item {
 
         // Handle for refresh bill
         dialogs.refreshBillDialog.accepted.connect(function() {
+            core.billGen.clearListItem()
             models.selectModel.clear()
             billView.cardNo.text = "0"
             resetToNormal()

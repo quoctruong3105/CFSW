@@ -7,6 +7,7 @@
 #include <QPainter>
 #include <QTextDocument>
 #include <QMap>
+#include <QJsonDocument>
 
 
 class BillGenerator : public QObject
@@ -17,16 +18,17 @@ public:
 signals:
 public slots:
     //void collectData();
-    void collectItemInfo(int, QString, int, int, const QVariantMap&);
+    void collectItemInfo(int, QString, int, int, const QString&);
     void print();
+    void clearListItem();
     void printBill();
 private:
     struct ItemModel {
         int id;
         QString name;
         int cost;
-        int quatity;
-        QVariantMap toppings;
+        int quantity;
+        QMap<QString, int> toppings;
     };
     QList<ItemModel> listItem;
 };

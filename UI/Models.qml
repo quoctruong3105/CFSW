@@ -51,9 +51,10 @@ Item {
     ListModel {
         id: selectModel
         onCountChanged: {
+            core.billGen.clearListItem()
             billView.updateTotal()
-            for(var i = 1; i < selectModel.count; i++) {
-                selectModel.setProperty(i, "index", i)
+            for(var i = 0; i < selectModel.count; i++) {
+                selectModel.setProperty(i, "index", i + 1)
             }
         }
     }

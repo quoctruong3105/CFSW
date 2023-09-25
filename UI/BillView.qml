@@ -3,7 +3,7 @@ import QtQuick.Controls
 
 Item {
     property int totalCostValue
-    property int totalQualtityValue
+    property int totalQuantityValue
     property alias currentTime: dateTime
     property alias billBackGround: billBackGround
     property alias cardNo: cardNo
@@ -23,11 +23,12 @@ Item {
     function updateTotal() {
         totalCostValue = 0
         for(var i = 0; i < models.selectModel.count; ++i) {
-            totalCostValue += (models.selectModel.get(i).cost + models.selectModel.get(i).extraCost) * models.selectModel.get(i).qualtity
+            totalCostValue += (models.selectModel.get(i).cost +
+                               models.selectModel.get(i).extraCost) * models.selectModel.get(i).quantity
         }
-        totalQualtityValue = 0
+        totalQuantityValue = 0
         for(var j = 0; j < models.selectModel.count; ++j) {
-            totalQualtityValue += models.selectModel.get(j).qualtity
+            totalQuantityValue += models.selectModel.get(j).quantity
         }
     }
 
@@ -297,7 +298,7 @@ Item {
                                 color: "transparent"
                                 anchors.left: toppingContainer.right
                                 anchors.leftMargin: width / 7
-                                QualtityBox {
+                                QuantityBox {
                                     id: factor
                                     height: parent.height * 2 / 3
                                     width: parent.width
@@ -349,13 +350,16 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
+                            core.billGen.clearListItem()
                             var itemModel = models.selectModel
                             for (var i = 0; i < itemModel.count; ++i) {
                                 var itemData = itemModel.get(i); // Assuming itemModel.get(i) returns an object with the required properties
 
                                 // Call the C++ function with the correct argument order and data types
-                                core.billGen.collectItemInfo(itemData.index, itemData.drink, itemData.cost, itemData.quantity, itemData.add);
+                                core.billGen.collectItemInfo(itemData.index, itemData.drink, itemData.cost,
+                                                             itemData.quantity, JSON.stringify(itemData.add));
                             }
+                            core.billGen.print()
                         }
                     }
                 }
@@ -387,8 +391,8 @@ Item {
                         verticalCenter: parent.verticalCenter
                     }
                     Text {
-                        id: totalQualtity
-                        text: totalQualtityValue
+                        id: totalQuantity
+                        text: totalQuantityValue
                         font.pointSize: dateTime.font.pointSize
                         anchors.top: parent.top
                         anchors.right: parent.right
