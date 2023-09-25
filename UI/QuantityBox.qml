@@ -34,8 +34,9 @@ Item {
                 font.pointSize: drinkName.font.pointSize
                 onTextChanged: {
                     for(var i = 0; i < models.selectModel.count; ++i) {
-                        if(models.selectModel.get(i).drink === drinkName.text) {
-                            models.selectModel.setProperty(i, "qualtity", factor.value)
+                        if(models.selectModel.get(i).drink === drinkName.text
+                           && models.selectModel.get(i).index === item.index) {
+                            models.selectModel.setProperty(i, "quantity", factor.value)
                             billView.updateTotal()
                             break
                         }

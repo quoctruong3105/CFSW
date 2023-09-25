@@ -161,7 +161,7 @@ Item {
                                     height: parent.height * 3 / 4
                                     Text {
                                         id: drinkName
-                                        text: model.drink.toUpperCase()
+                                        text: model.drink
                                         font {
                                             pointSize: drinkImg.height / 6
                                             bold: true
@@ -193,9 +193,9 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            models.selectModel.append({ "index" : 0, "drink": drinkName.text,
+                            models.selectModel.append({ "index" : 1, "drink": drinkName.text,
                                                         "cost": parseFloat(costName.text.slice(0, costName.text.length - 4)),
-                                                        "qualtity" : 1, "add" : ({}), "extraCost" : 0 })
+                                                        "quantity" : 1, "add" : ({}), "extraCost" : 0 })
                         }
                     }
                 }

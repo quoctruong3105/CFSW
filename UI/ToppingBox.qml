@@ -35,7 +35,8 @@ Item {
                             }
                         }
                         for(var i = 0; i < models.selectModel.count; i++) {
-                            if(models.selectModel.get(i).drink === drinkName.text) {
+                            if(models.selectModel.get(i).drink === drinkName.text
+                               && models.selectModel.get(i).index === item.index) {
                                 models.selectModel.setProperty(i, "add", add)
                                 var totalToppingCostValue = 0
                                 for (var key in add) {
