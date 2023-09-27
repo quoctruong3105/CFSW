@@ -14,5 +14,6 @@
         <file>UI/QuantityBox.qml</file>
         <file>UI/LoginPage.qml</file>
         <file>UI/FeatureGrpBtn.qml</file>
+        <file>UI/UpsizeCheckBox.qml</file>
     </qresource>
 </RCC>

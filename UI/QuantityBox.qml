@@ -21,12 +21,12 @@ Item {
     Rectangle {
         width: parent.width
         height: parent.height
-
         Rectangle {
             id: spinBoxContainer
-            width: parent.width / 2
+            width: parent.width * 1.2 / 5
             height: parent.height
             border.color: "lightgrey"
+            anchors.centerIn: parent
             Text {
                 id: spinBox
                 anchors.centerIn: parent
@@ -34,8 +34,7 @@ Item {
                 font.pointSize: drinkName.font.pointSize
                 onTextChanged: {
                     for(var i = 0; i < models.selectModel.count; ++i) {
-                        if(models.selectModel.get(i).drink === drinkName.text
-                           && models.selectModel.get(i).index === item.index) {
+                        if(models.selectModel.get(i).index === item.index) {
                             models.selectModel.setProperty(i, "quantity", factor.value)
                             billView.updateTotal()
                             break
@@ -49,7 +48,7 @@ Item {
             text: "+"
             font.pointSize: spinBox.font.pointSize
             font.bold: true
-            width: parent.width / 2.5
+            width: parent.width * 1.2 / 5
             height: parent.height
             anchors.verticalCenter: spinBoxContainer.verticalCenter
             anchors.left: spinBoxContainer.right
@@ -60,7 +59,7 @@ Item {
             text: "-"
             font.pointSize: spinBox.font.pointSize
             font.bold: true
-            width: parent.width / 2.5
+            width: parent.width * 1.2 / 5
             height: parent.height
             anchors.verticalCenter: spinBoxContainer.verticalCenter
             anchors.right: spinBoxContainer.left
