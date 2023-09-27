@@ -21,24 +21,35 @@ Item {
                 models.dummyData(models.drinkModel)
             }
         }
-        Image {
+        Rectangle {
             id: searchBtn
             width: searchField.height
             height: width
-            source: "qrc:/img/search.png"
-            fillMode: Image.PreserveAspectFit
             smooth: true
             antialiasing: true
+
+            Text {
+                id: searchText
+                text: qsTr("E")
+                font {
+                    bold: true
+                    pointSize: height
+                }
+                color: "red"
+                anchors.centerIn: parent
+                scale: 1 // Initial scale is 1
+            }
+
             anchors {
                 left: searchField.right
-                leftMargin: height / 2
                 top: searchField.top
             }
+
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    console.log("1")
-                    core.billGen.printBill()
+                    searchTxt.text = ""
+                    scaleAnimator(searchText)
                 }
             }
         }

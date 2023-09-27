@@ -195,7 +195,7 @@ Item {
                         onClicked: {
                             models.selectModel.append({ "index" : 1, "drink": drinkName.text,
                                                         "cost": parseFloat(costName.text.slice(0, costName.text.length - 4)),
-                                                        "quantity" : 1, "add" : ({}), "extraCost" : 0 })
+                                                        "quantity" : 1, "add" : ({}), "extraCost" : 0, "isSizeL" : 0 })
                         }
                     }
                 }
@@ -203,7 +203,7 @@ Item {
 
 //            ScrollBar.vertical: ScrollBar {
 //                policy: ScrollBar.AsNeeded
-//                size: flickable.contentHeight / flickable.height
+//                size: flickable.contentHeight / 40
 //            }
         }
     }

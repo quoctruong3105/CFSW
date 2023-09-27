@@ -11,6 +11,17 @@ ApplicationWindow {
     color: defaultColor
     //visibility: Window.FullScreen
 
+    function scaleAnimator(target) {
+        target.scale = 1.3;
+        var scaleAnimation = Qt.createQmlObject('import QtQuick 2.15; NumberAnimation {}', target);
+        scaleAnimation.target = target;
+        scaleAnimation.property = "scale";
+        scaleAnimation.to = 1;
+        scaleAnimation.duration = 2000;
+        scaleAnimation.easing.type = Easing.OutCubic;
+        scaleAnimation.start();
+    }
+
     property color defaultColor: "#f5deb3"
 
     Component.onCompleted: {
@@ -80,7 +91,7 @@ ApplicationWindow {
             id: containBar
             width: parent.width / 8
             height: parent.height / 18
-            property int index: 0
+            //property int index: 0
             OrderBar {
                 id: orderBar
                 width: parent.width

@@ -5,6 +5,11 @@ DataHandle::DataHandle(QObject *parent) : QObject{parent} {
     this->connect();
 }
 
+DataHandle::~DataHandle()
+{
+    this->disconnect();
+}
+
 void DataHandle::queryItem(QString str, QString tableName)
 {
 //    if(!db) {
@@ -44,15 +49,15 @@ void DataHandle::queryItem(QString str, QString tableName)
 
     while (query.next()) {
         QMap<QString, QVariant> map;
-        bool pos = 1;
-        if(tableName == "toppings") {
-            pos = 0;
-        }
+//        bool pos = 2;
+//        if(tableName == "toppings") {
+//            pos = 0;
+//        }
 
         if(tableName == "accounts") {
-            map.insert(query.value(pos).toString(), query.value(2).toString());
+            map.insert(query.value(1).toString(), query.value(2).toString());
         } else {
-            map.insert(query.value(pos).toString(), query.value(2).toInt());
+            map.insert(query.value(2).toString(), query.value(3).toInt());
         }
 
         for (auto it = map.begin(); it != map.end(); ++it) {
@@ -100,6 +105,11 @@ void DataHandle::updateAccLog(bool isLogIn, QString time, QString username)
     qDebug() << "Update successful";
 }
 
+void DataHandle::transferBillToDb()
+{
+
+}
+
 QVariantMap DataHandle::getItemList(int i)
 {
     return itemList.at(i);
@@ -126,11 +136,13 @@ void DataHandle::connect() {
 //    qDebug() << "bbbb";
 
     db = new QSqlDatabase(QSqlDatabase::addDatabase("QPSQL"));
-//    db->setHostName("113.172.103.8");
+    // remote
+//    db->setHostName("45.124.95.171");
 //    db->setPort(5432);
-//    db->setDatabaseName("hi_cf_db");
-//    db->setUserName("hicf3105");
-//    db->setPassword("TruongquoC3105vt@#");
+//    db->setDatabaseName("cf_prj");
+//    db->setUserName("truong");
+//    db->setPassword("12345");
+    // local
         db->setHostName("localhost");
         db->setPort(5432);
         db->setDatabaseName("cf_prj");

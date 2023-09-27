@@ -79,6 +79,7 @@ Item {
         Text {
             text: qsTr("Find \nBill")
             color: "dodgerblue"
+            font.pointSize: parent.height / 4
             font.bold: true
             anchors.centerIn: parent
             horizontalAlignment: Text.AlignHCenter
@@ -105,6 +106,7 @@ Item {
             text: qsTr("Refresh \nBill")
             color: "lightseagreen"
             font.bold: true
+            font.pointSize: parent.height / 4
             anchors.centerIn: parent
             horizontalAlignment: Text.AlignHCenter
         }
@@ -130,6 +132,7 @@ Item {
             text: qsTr("Log \nOut")
             color: "red"
             font.bold: true
+            font.pointSize: parent.height / 4
             anchors.centerIn: parent
             horizontalAlignment: Text.AlignHCenter
         }
