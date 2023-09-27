@@ -3,11 +3,11 @@ import QtQuick.Controls 2.15
 
 Item {
     property color onClickedCoor: root.defaultColor
-    property color defaultColor: "#BBA68B"
+    property color localDefaultColor: "#a3a3cc"
 
     function updateBtn(nameOn, nameOff) {
         menuView.stackView.clear()
-        nameOff.color = defaultColor
+        nameOff.color = localDefaultColor
         nameOn.color = onClickedCoor
         if(nameOn === drinkBtnId) {
             menuView.stackView.push(menuView.drinkPage)
@@ -18,7 +18,7 @@ Item {
 
     Component.onCompleted: {
         menuView.stackView.push(menuView.drinkPage)
-        cakeBtnId.color = defaultColor
+        cakeBtnId.color = localDefaultColor
         drinkBtnId.color = onClickedCoor
     }
 

@@ -10,7 +10,8 @@ public:
     Account(QObject *parent = nullptr);
 signals:
 public slots:
-    static void setCurrentUser(QString);
+    //                            userName
+    static void setCurrentUser(const QString&);
     QString getCurrentUser();
 private:
     static QString currentUser;

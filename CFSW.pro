@@ -1,6 +1,7 @@
 QT += quick
 QT += sql
 QT += core widgets printsupport
+QT += network
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -8,17 +9,24 @@ QT += core widgets printsupport
 
 HEADERS += \
     Include/BillGenerator.h \
-        Include/DataHandler.h \
-        Include/Account.h \
+    Include/DataHandler.h \
+    Include/Account.h \
+    Include/QRPayment.h \
+    Include/Worker.h \
+    Include/WorkerController.h
 
 SOURCES += \
-        Source/Account.cpp \
+    Source/Account.cpp \
     Source/BillGenerator.cpp \
-        Source/DataHandler.cpp \
-        Source/main.cpp \
+    Source/DataHandler.cpp \
+    Source/QRPayment.cpp \
+    Source/Worker.cpp \
+    Source/WorkerController.cpp \
+    Source/main.cpp \
 
-RESOURCES += qml.qrc \
-        img.qrc
+RESOURCES += \
+    qml.qrc \
+    img.qrc \
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -31,4 +39,6 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-DISTFILES +=
+DISTFILES += \
+    Credentials/TransactionCredential.json \
+    Tools/CheckQRPayment.py \

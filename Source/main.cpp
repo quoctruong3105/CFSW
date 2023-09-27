@@ -2,10 +2,12 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QIcon>
+
 #include "Include/DataHandler.h"
 #include "Include/Account.h"
 #include "Include/BillGenerator.h"
-
+#include "Include/QRPayment.h"
+#include "Include/WorkerController.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,7 +20,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<DataHandle>("Qt.DataHandle.Module", 1, 0, "DataHandler");
     qmlRegisterType<Account>("Qt.Account.Module", 1, 0, "Account");
     qmlRegisterType<BillGenerator>("Qt.BillGenerator.Module", 1, 0, "BillGenerator");
-
+    qmlRegisterType<QRPayment>("Qt.QRPayment.Module", 1, 0, "QRPayment");
+    qmlRegisterType<WorkerController>("Qt.WorkerController.Module", 1, 0, "WorkerController");
 
     const QUrl url(QStringLiteral("qrc:/UI/Main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

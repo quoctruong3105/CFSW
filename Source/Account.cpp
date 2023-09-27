@@ -5,7 +5,7 @@ Account::Account(QObject *parent) : QObject{parent} {
 
 }
 
-void Account::setCurrentUser(QString username)
+void Account::setCurrentUser(const QString &username)
 {
     currentUser = username;
 }

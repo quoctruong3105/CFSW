@@ -8,6 +8,7 @@ Item {
     property alias selectModel: selectModel
     property alias toppingModel: toppingModel
     property alias accModel: accModel
+    property alias billModel: billModel
     property var tableList: ["drinks", "toppings", "accounts"]
     property alias toppingModel: toppingModel
     property alias accModel: accModel
@@ -22,6 +23,13 @@ Item {
         }
         core.dh.clearData()
         core.dh.clearData()
+    }
+
+    function dummyBillInfo(text) {
+        if(billModel.count == 1) {
+            billModel.remove(0)
+        }
+        billModel.append(core.dh.queryBill(text))
     }
 
     Component.onCompleted: {
@@ -41,7 +49,6 @@ Item {
             dummyData(modelName);
         }
     }
-
 
     ListModel {
         id: accModel
@@ -76,5 +83,8 @@ Item {
                 selectModel.setProperty(i, "index", i)
             }
         }
+    }
+    ListModel {
+        id: billModel
     }
 }

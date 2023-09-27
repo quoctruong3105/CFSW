@@ -3,6 +3,7 @@ import QtQuick.Controls
 
 Item {
     property int totalCostValue
+    //property alias itemModel: itemSelection.model
     property int totalQuantityValue
     property alias currentTime: dateTime
     property alias billBackGround: billBackGround
@@ -17,29 +18,21 @@ Item {
         var year = now.getFullYear();
         var hours = ("0" + now.getHours()).slice(-2);
         var minutes = ("0" + now.getMinutes()).slice(-2);
+        var seconds = ("0" + now.getSeconds()).slice(-2);
 
-        dateTime.text = day + "/" + month + "/" + year + " " + hours + ":" + minutes;
+        dateTime.text = day + "/" + month + "/" + year + " " + hours + ":" + minutes + ":" + seconds
     }
-
 
     function updateTotal() {
         totalCostValue = 0
         for(var i = 0; i < models.selectModel.count; ++i) {
-            totalCostValue += (models.selectModel.get(i).cost +
-                               models.selectModel.get(i).extraCost) * models.selectModel.get(i).quantity
-        }
-        totalQuantityValue = 0
-        for(var j = 0; j < models.selectModel.count; ++j) {
-            totalQuantityValue += models.selectModel.get(j).quantity
-        }
-    }
+            var upCost = 0
+            if(models.selectModel.get(i).isSizeL) {
+                upCost = 5
+            }
 
-
-    function updateTotal() {
-        totalCostValue = 0
-        for(var i = 0; i < models.selectModel.count; ++i) {
             totalCostValue += (models.selectModel.get(i).cost +
-                               models.selectModel.get(i).extraCost) * models.selectModel.get(i).quantity
+                               models.selectModel.get(i).extraCost + upCost) * models.selectModel.get(i).quantity
         }
         totalQuantityValue = 0
         for(var j = 0; j < models.selectModel.count; ++j) {
@@ -114,7 +107,7 @@ Item {
                     text: "Gắn thẻ  "
                     anchors {
                         left: dateTime.right
-                        leftMargin: dateTime.height * 2
+                        leftMargin: dateTime.height * 2.5
                         verticalCenter: parent.verticalCenter
                     }
                     font.pointSize: dateTime.font.pointSize
@@ -123,15 +116,15 @@ Item {
                     id: cardContainter
                     width: height
                     height: parent.height / 1.4
-                    border.color: "lightgrey"
+                    property color errorColor: "red"
+                    property color normalColor: "lightgrey"
+                    border.color: normalColor
                     anchors {
                         verticalCenter: parent.verticalCenter
                         left: cardTxt.right
                     }
-
                     Text {
                         id: cardNo
-                        text: qsTr("0")
                         font.pointSize: dateTime.font.pointSize
                         anchors.centerIn: parent
                     }
@@ -154,7 +147,6 @@ Item {
                         horizontalCenter: cardContainter.horizontalCenter
                     }
 
-                    property color chooseColor: "red"
                     function setCardVal(val) {
                         cardNo.text = val
                     }
@@ -165,8 +157,7 @@ Item {
                         ListElement { text1: "7"; text2: "8"; text3: "9" }
                         ListElement { text1: "10"; text2: "11"; text3: "12" }
                         ListElement { text1: "13"; text2: "14"; text3: "15" }
-                        ListElement { text1: "16"; text2: "17"; text3: "18" }
-                        ListElement { text1: "19"; text2: "20"}
+                        ListElement { text1: "16";}
                     }
 
                     delegate: Rectangle {
@@ -222,19 +213,20 @@ Item {
             Rectangle {
                 id: itemSelection
                 width: parent.width / 1.05
-                height: billHeader.height * 8
+                height: billHeader.height * 8 + itemSelection.border.width * 2
                 border {
                     color: "lightgrey"
-                    width: dateTimeContainer.height / 20
+                    width: dateTimeContainer.height / 30
                 }
                 anchors {
                     horizontalCenter: parent.horizontalCenter
                     top: dateTimeContainer.bottom
                 }
                 Flickable {
-                    width: parent.width / 1.05
-                    height: parent.height / 1.05
+                    width: parent.width
+                    height: parent.height
                     anchors.centerIn: parent
+                    clip: true
                     ListView {
                         id: itemListView
                         width: itemSelection.width - itemSelection.border.width * 2
@@ -243,26 +235,32 @@ Item {
                         clip: true
                         model: models.selectModel
 
+                        onCountChanged: {
+                            if (count > 0) {
+                                currentIndex = count - 1; // Set the currentIndex to the last item
+                            }
+                        }
+
                         delegate: Rectangle {
                             id: item
                             height: billHeader.height
                             width: parent.width
+                            //border.color: "black"
                             anchors.horizontalCenter: parent.horizontalCenter                           
                             property int index: model.index
-                            anchors.horizontalCenter: parent.horizontalCenter                           
-                            property int index: model.index
+
                             Rectangle {
                                 id: removeContainer
                                 id: removeContainer
                                 height: parent.height
-                                width: parent.width * 1 / 10
+                                width: parent.width / 13
                                 anchors.left: parent.left
                                 anchors.margins: width / 20
                                 color: "transparent"
                                 Text {
                                     id: removeBtn
                                     id: removeBtn
-                                    text: "X"
+                                    text: "✘"
                                     font.bold: true
                                     font.pointSize: parent.height / 3
                                     anchors.centerIn: parent
@@ -272,10 +270,7 @@ Item {
                                     anchors.fill: parent
                                     onClicked: {
                                         for(var i = 0; i < models.selectModel.count; i++) {
-                                            if(models.selectModel.get(i).drink === drinkName.text &&
-                                            models.selectModel.get(i).index === item.index) {
-                                            if(models.selectModel.get(i).drink === drinkName.text &&
-                                            models.selectModel.get(i).index === item.index) {
+                                            if(models.selectModel.get(i).index === item.index) {
                                                 models.selectModel.remove(i)
                                                 break
                                                 break
@@ -284,68 +279,94 @@ Item {
                                     }
                                 }
                             }
+
                             Rectangle {
                                 id: drinkNameContainer
                                 height: parent.height
-                                width: parent.width * 8 / 25
-                                //border.color: "black"
-                                color: "transparent"
-                                anchors.left: removeContainer.right
+                                width: parent.width * 8 / 28
+                                //color: "transparent"
                                 anchors.left: removeContainer.right
                                 Text {
                                     id: drinkName
                                     text: model.drink
-                                    font.pointSize: parent.height / 6
-                                    anchors {
-                                        verticalCenter: parent.verticalCenter
+                                    font.pointSize: parent.height / 5
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    width: parent.width
+                                    wrapMode: Text.WrapAnywhere
+                                }
+                            }
+
+                            Rectangle {
+                                id: upSizeContainer
+                                //border.color: "black"
+                                height: parent.height / 1.6
+                                width: height / 1.2
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.left: drinkNameContainer.right
+                                Column {
+                                    anchors.fill: parent
+                                    anchors.centerIn: parent
+                                    UpsizeCheckBox {
+                                        width: upSizeContainer.width / 1.3
+                                        height: width
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                    }
+                                    Text {
+                                        text: qsTr("L")
+                                        anchors.horizontalCenter: parent.horizontalCenter
+                                        font.pointSize: parent.height / 3.5
                                     }
                                 }
                             }
+
                             Rectangle {
                                 id: toppingContainer
-                                width: factorContainer.width * 2
-                                height: factorContainer.height
-                                anchors.left: drinkNameContainer.right
-                                anchors.leftMargin: width / 12
+                                //border.color: "black"
+                                width: parent.width / 6
+                                height: parent.height
+                                anchors.left: upSizeContainer.right
+                                anchors.leftMargin: width / 4.2
                                 ToppingBox {
                                     id: extraTopping
-                                    width: factor.width * 1.2
-                                    height: factor.height
-                                    anchors.verticalCenter: parent.verticalCenter
+                                    width: parent.width / 1.2
+                                    height: parent.height / 1.2
+                                    anchors.centerIn: parent
                                 }
                             }
+
                             Rectangle {
                                 id: factorContainer
+                                //border.color: "black"
                                 height: parent.height
-                                width: parent.width * 2 / 15
+                                width: parent.width / 5
                                 color: "transparent"
-                                anchors.left: toppingContainer.right
-                                anchors.leftMargin: width / 7
+                                anchors.right: costContainer.left
                                 QuantityBox {
                                     id: factor
                                     height: parent.height * 2 / 3
                                     width: parent.width
-                                    anchors.verticalCenter: parent.verticalCenter
+                                    anchors.centerIn: parent
                                 }
                             }
+
                             Rectangle {
                                 id: costContainer
                                 height: parent.height
-                                width:  factor.width
+                                width:  parent.width / 6.5
                                 color: "transparent"
                                 anchors.right: parent.right
                                 Text {
                                     id: cost
-                                    text: (model.cost + model.extraCost) * factor.value + ".000"
+                                    text: (model.cost + model.extraCost + (model.isSizeL ? 5 : 0)) * factor.value + ".000"
                                     font.pointSize: drinkName.font.pointSize
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    anchors.centerIn: parent
                                 }
                             }
                         }
                     }
                 }
             }
+
             Rectangle {
                 id: payContainer
                 width: itemSelection.width
@@ -361,6 +382,7 @@ Item {
                     color: "limegreen"
                     anchors.verticalCenter: parent.verticalCenter
                     Text {
+                        id: payTxt
                         text: qsTr("YÊU CẦU \nTHANH TOÁN")
                         color: "white"
                         horizontalAlignment: Text.AlignHCenter
@@ -373,18 +395,16 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            core.billGen.clearListItem()
-                            var itemModel = models.selectModel
-                            for (var i = 0; i < itemModel.count; ++i) {
-                                var itemData = itemModel.get(i); // Assuming itemModel.get(i) returns an object with the required properties
-
-                                // Call the C++ function with the correct argument order and data types
-                                core.billGen.collectItemInfo(itemData.index, itemData.drink,
-                                                             (itemData.cost + itemData.extraCost) *  itemData.quantity,
-                                                             itemData.quantity, JSON.stringify(itemData.add));
+                            scaleAnimator(payTxt)
+                            if(!(models.selectModel.count === 0)) {
+                                if(cardNo.text == "") {
+                                    scaleAnimator(cardContainter)
+                                    cardContainter.border.color = cardContainter.errorColor
+                                } else {
+                                    cardContainter.border.color = cardContainter.normalColor
+                                    dialogs.openDialogAtCenter(dialogs.requestPayDialog)
+                                }
                             }
-                            core.billGen.print()
-                            core.billGen.printBill()
                         }
                     }
                 }

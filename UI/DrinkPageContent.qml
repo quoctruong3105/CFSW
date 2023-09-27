@@ -84,20 +84,18 @@ Item {
             }
             onCurrentValueChanged: {
                 search.searchTxt.text = ""
-                var tableName = "drinks"
-                var tableName = "drinks"
                 if(currentValue === "Tất cả mặt hàng") {
                     models.drinkModel.clear()
-                    core.dh.queryItem("", tableName)
+                    core.dh.queryItem("", "drinks")
                 } else if(currentValue === "Sinh tố") {
                     models.drinkModel.clear()
-                    core.dh.queryItem("sinh to", tableName)
+                    core.dh.queryItem("sinh to", "drinks")
                 } else if(currentValue === "Nước ép") {
                     models.drinkModel.clear()
-                    core.dh.queryItem("nuoc ep", tableName)
+                    core.dh.queryItem("nuoc ep", "drinks")
                 } else if(currentValue === "Cà phê") {
                     models.drinkModel.clear()
-                    core.dh.queryItem("ca phe", tableName)
+                    core.dh.queryItem("ca phe", "drinks")
                 }
                 models.dummyData(models.drinkModel)
                 models.dummyData(models.drinkModel)
@@ -141,11 +139,18 @@ Item {
                             id: drinkImg
                             width: parent.height
                             height: width
-                            radius: height / 5
-                            Image {
-                                anchors.fill: parent
-                                source: "qrc:/img/soda.png"
-                                antialiasing: true
+                            radius: height / 2
+                            color: index % 2 === 0 ? "limegreen" : "red"
+                            Text {
+                                text: (index % 2 === 0) ? "◢✥◣ \nAvailable \n◥✥◤" : "◢✥◣ \nSold out \n◥✥◤"
+                                rotation: -30
+                                anchors.centerIn: parent
+                                color: "white"
+                                horizontalAlignment: Text.AlignHCenter
+                                font {
+                                    bold: true
+                                    pointSize: drinkImg.height / 8
+                                }
                             }
                         }
 
@@ -197,16 +202,15 @@ Item {
                         onClicked: {
                             models.selectModel.append({ "index" : 1, "drink": drinkName.text,
                                                         "cost": parseFloat(costName.text.slice(0, costName.text.length - 4)),
-                                                        "quantity" : 1, "add" : ({}), "extraCost" : 0 })
+                                                        "quantity" : 1, "add" : ({}), "extraCost" : 0, "isSizeL" : 0 })
                         }
                     }
                 }
             }
-
-//            ScrollBar.vertical: ScrollBar {
-//                policy: ScrollBar.AsNeeded
-//                size: flickable.contentHeight / flickable.height
-//            }
+            ScrollBar.vertical: ScrollBar {
+                policy: ScrollBar.AsNeeded
+                height: flickable.height
+            }
         }
     }
 }

@@ -4,71 +4,24 @@ import QtQuick.Layouts 2.15
 Item {
     property color normalColor: "white"
     property color chooseColor: "black"
+    property alias findBillBtn: findBillBtn
+    property alias refreshBillBtn: refreshBillBtn
+    property alias logOutBtn: logOutBtn
     property var listBtn: [findBillBtn, refreshBillBtn, logOutBtn]
 
-    Component.onCompleted: {
-        // Handle for log out
-        dialogs.logOutDialog.accepted.connect(function() {
-            core.dh.updateAccLog(false, billView.currentTime.text, core.currentAcc.getCurrentUser())
-            loginPage.isValid = false
-            resetToNormal()
-
-        })
-        dialogs.logOutDialog.rejected.connect(function() {
-            resetToNormal()
-        })
-
-        // Handle for refresh bill
-        dialogs.refreshBillDialog.accepted.connect(function() {
-            core.billGen.clearListItem()
-            models.selectModel.clear()
-            billView.cardNo.text = "0"
-            resetToNormal()
-        })
-        dialogs.refreshBillDialog.rejected.connect(function() {
-            resetToNormal()
-        })
-
-        // Handle for find bill
-        dialogs.findBillDialog.closed.connect(function() {
-            resetToNormal()
-        })
-    }
-
-    function resetToNormal() {
-        for(var i = 0; i < listBtn.length; ++i) {
-            if(listBtn[i].color === chooseColor) {
-                listBtn[i].color = normalColor
+    function resetAllToNormal() {
+        for(var i = 0; i < featureBtnGrp.listBtn.length; ++i) {
+            if(featureBtnGrp.listBtn[i].color === featureBtnGrp.chooseColor) {
+                featureBtnGrp.listBtn[i].color = featureBtnGrp.normalColor
                 break
             }
-        }
-    }
-
-    function openDialogAtCenter(dialogName) {
-        var dialogWidth = dialogName.width;
-        var dialogHeight = dialogName.height;
-
-        dialogName.x = (menuView.stackView.width - dialogWidth) / 2;
-        dialogName.y = (menuView.stackView.height - dialogHeight) / 2;
-        dialogName.open()
-    }
-
-    function callDialog(btnId) {
-        resetToNormal()
-        btnId.color = chooseColor
-        if(btnId === logOutBtn) {
-            openDialogAtCenter(dialogs.logOutDialog)
-        } else if(btnId === refreshBillBtn) {
-            openDialogAtCenter(dialogs.refreshBillDialog)
-        } else if(btnId === findBillBtn) {
-            openDialogAtCenter(dialogs.findBillDialog)
         }
     }
 
     Rectangle {
         id: findBillBtn
         height: parent.height / 1.2
-        width: parent.width / 7
+        width: parent.width / 6
         radius: height / 2
         anchors {
             right: refreshBillBtn.left
@@ -77,8 +30,9 @@ Item {
         }
         antialiasing: true
         Text {
-            text: qsTr("Find \nBill")
+            text: qsTr("Find Bill \n⌕")
             color: "dodgerblue"
+            font.pointSize: parent.height / 4
             font.bold: true
             anchors.centerIn: parent
             horizontalAlignment: Text.AlignHCenter
@@ -86,14 +40,14 @@ Item {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                callDialog(findBillBtn)
+                dialogs.callDialog(findBillBtn)
             }
         }
     }
     Rectangle {
         id: refreshBillBtn
         height: parent.height / 1.2
-        width: parent.width / 7
+        width: parent.width / 6
         radius: height / 2
         anchors {
             right: logOutBtn.left
@@ -102,23 +56,24 @@ Item {
         }
         antialiasing: true
         Text {
-            text: qsTr("Refresh \nBill")
+            text: qsTr("Clear Bill \n⟳")
             color: "lightseagreen"
             font.bold: true
+            font.pointSize: parent.height / 4
             anchors.centerIn: parent
             horizontalAlignment: Text.AlignHCenter
         }
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                callDialog(refreshBillBtn)
+                dialogs.callDialog(refreshBillBtn)
             }
         }
     }
     Rectangle {
         id: logOutBtn
         height: parent.height / 1.2
-        width: parent.width / 7
+        width: parent.width / 6
         radius: height / 2
         anchors {
             right: parent.right
@@ -127,16 +82,17 @@ Item {
         }
         antialiasing: true
         Text {
-            text: qsTr("Log \nOut")
+            text: qsTr("Log Out \n⬎")
             color: "red"
             font.bold: true
+            font.pointSize: parent.height / 4
             anchors.centerIn: parent
             horizontalAlignment: Text.AlignHCenter
         }
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                callDialog(logOutBtn)
+                dialogs.callDialog(logOutBtn)
             }
         }
     }

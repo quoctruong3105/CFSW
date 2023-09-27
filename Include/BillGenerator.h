@@ -10,6 +10,11 @@
 #include <QMap>
 #include <QVariantMap>
 #include <QJsonDocument>
+#include <QTextTableCell>
+#include <QRandomGenerator>
+#include <QSqlQuery>
+#include <QJsonArray>
+#include <QJsonObject>
 
 
 class BillGenerator : public QObject
@@ -19,20 +24,39 @@ public:
     BillGenerator(QObject *parent = nullptr);
 signals:
 public slots:
-    //void collectData();
-    void collectItemInfo(int, QString, int, int, const QString&);
-    void print();
     void clearListItem();
+
+    //                       id           name         tl            qty        toppings       size
+    void collectItemInfo(const int&, const QString&, const int&, const int&, const QString&, const bool&);
+
+    //                        Date            total            cash           account
+    void collectOtherInfo(const QString&, const QString&, const QString&, const QString&,
+                          const QString&, const int&, const int&);
+    //                        solu         totalQ'ty    cardNo
+
     void printBill();
+    QString generateRcptId();
 private:
+    void fromBillToDB();
+
+    //               id            drink            toppings                cost
+    void printTag(const int&, const QString&, const QMap<QString, int>&, const int&);
+
+    static QString shopName;
+    static QString address;
+    static QString phoneNum;
+    static QString passWifi;
+
     struct ItemModel {
-        size_t id;
+        int id;
         QString name;
-        size_t total;
-        size_t quantity;
+        int total;
+        int quantity;
         QMap<QString, int> toppings;
+        bool isSizeL;
     };
     QList<ItemModel> listItem;
+    QList<QVariant> otherInfo;
 };
 
 #endif // BILLGENERATOR_H
