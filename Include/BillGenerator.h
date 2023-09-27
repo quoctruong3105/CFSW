@@ -21,6 +21,7 @@ signals:
 public slots:
     //void collectData();
     void collectItemInfo(int, QString, int, int, const QString&);
+    void collectOtherInfo(long, QString, int, int);
     void print();
     void clearListItem();
     void printBill();
@@ -33,6 +34,7 @@ private:
         QMap<QString, int> toppings;
     };
     QList<ItemModel> listItem;
+    QList<QVariant> otherInfo;
 };
 
 #endif // BILLGENERATOR_H

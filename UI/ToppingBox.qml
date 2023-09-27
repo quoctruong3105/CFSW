@@ -3,14 +3,28 @@ import QtQuick.Controls 2.15
 
 Item {
     property var add: ({})
+    Component.onCompleted: {
+        comboBox.popup.opened.connect(function() {
+            extraTxtContainer.border.color = "blue"
+        })
+    }
 
     ComboBox {
         id: comboBox
         width: parent.width
         height: parent.height
         model: models.toppingModel
+        popup{
+            width: parent.width * 2.5
+            topPadding: {
+                if (contentItem && contentItem.height > billView.height)
+                    return -parent.height + contentItem.height;
+                else
+                    return 0;
+            }
+        }
         Text {
-            text: qsTr("Add...")
+            text: qsTr("Extra...")
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.left
             anchors.leftMargin: parent.width / 10
@@ -18,11 +32,10 @@ Item {
         }
         delegate: Item {
             width: parent.width
-            height: parent.width / 1.5
+            height: parent.width / 3
             Row {
                 anchors.fill: parent
                 anchors.margins: parent.width / 8
-                spacing: parent.width / 200
                 CheckBox {
                     id: checkboxId
                     anchors.verticalCenter: parent.verticalCenter
@@ -53,10 +66,15 @@ Item {
                     }
                 }
                 Label {
-                    text: model.topping
                     width: parent.width - checkboxId.width
                     height: parent.height
                     verticalAlignment: Qt.AlignVCenter
+                    Text {
+                        text: model.topping
+                        font.pointSize: parent.width / 9
+                        width: parent.width
+                        elide: Text.ElideRight // This will truncate the text with "..." if it overflows
+                    }
                 }
             }
         }

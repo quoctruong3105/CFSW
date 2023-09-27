@@ -45,9 +45,9 @@ void DataHandle::queryItem(QString str, QString tableName)
     while (query.next()) {
         QMap<QString, QVariant> map;
         bool pos = 1;
-        if(tableName == "toppings") {
-            pos = 0;
-        }
+//        if(tableName == "toppings") {
+//            pos = 0;
+//        }
 
         if(tableName == "accounts") {
             map.insert(query.value(pos).toString(), query.value(2).toString());

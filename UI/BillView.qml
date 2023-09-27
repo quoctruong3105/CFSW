@@ -272,7 +272,7 @@ Item {
                                 Text {
                                     id: drinkName
                                     text: model.drink
-                                    font.pointSize: parent.height / 6
+                                    font.pointSize: parent.height / 5
                                     anchors {
                                         verticalCenter: parent.verticalCenter
                                     }
@@ -280,13 +280,13 @@ Item {
                             }
                             Rectangle {
                                 id: toppingContainer
-                                width: factorContainer.width * 2
+                                width: factorContainer.width * 1.85
                                 height: factorContainer.height
                                 anchors.left: drinkNameContainer.right
                                 anchors.leftMargin: width / 12
                                 ToppingBox {
                                     id: extraTopping
-                                    width: factor.width * 1.2
+                                    width: factor.width
                                     height: factor.height
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
