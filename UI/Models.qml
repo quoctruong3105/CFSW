@@ -57,4 +57,7 @@ Item {
             }
         }
     }
+    ListModel {
+        id: billModel
+    }
 }

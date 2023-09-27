@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import Qt.labs.qmlmodels 1.0
 
 Item {
     property alias logOutDialog: logOutDialog
@@ -7,8 +8,8 @@ Item {
     property alias findBillDialog: findBillDialog
     property int smallWidth: menuView.stackView.width / 3
     property int smallheight: smallWidth / 2
-    property int mediumWidth: menuView.stackView.width / 2
-    property int mediumHeight: mediumWidth
+    property int mediumWidth: menuView.stackView.width / 1.2
+    property int mediumHeight: menuView.stackView.height / 2
 
     Dialog {
         id: logOutDialog
@@ -47,14 +48,27 @@ Item {
         height: mediumHeight
         modal: true
         standardButtons: Dialog.Close
-
-        TextField {
+        Rectangle {
+            id: searchBillBar
             width: parent.width
-            placeholderText: "Nhập mã hóa đơn"
+            height: parent.height / 10
+            TextField {
+                width: parent.width
+                height: parent.height
+                placeholderText: "Nhập mã hóa đơn"
+                font.pointSize: height / 2
+                onTextChanged: {
+                    core.dh.queryBill(text)
+                }
+            }
         }
-
-//        onAccepted: {
-//            findBillDialog.close()
-//        }
+        Rectangle {
+            id: rectangle
+            color: defaultColor
+            width: parent.width
+            height: parent.height - searchBillBar.height
+            anchors.top: searchBillBar.bottom
+            anchors.topMargin: searchBillBar.height / 2
+        }
     }
 }

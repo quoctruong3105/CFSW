@@ -45,11 +45,8 @@ Item {
     }
 
     function openDialogAtCenter(dialogName) {
-        var dialogWidth = dialogName.width;
-        var dialogHeight = dialogName.height;
-
-        dialogName.x = (menuView.stackView.width - dialogWidth) / 2;
-        dialogName.y = (menuView.stackView.height - dialogHeight) / 2;
+        dialogName.x = (menuView.stackView.width - dialogName.width) / 2
+        dialogName.y = (menuView.stackView.height - dialogName.height) / 2
         dialogName.open()
     }
 
@@ -79,6 +76,7 @@ Item {
         Text {
             text: qsTr("Find \nBill")
             color: "dodgerblue"
+            font.pointSize: parent.height / 4
             font.bold: true
             anchors.centerIn: parent
             horizontalAlignment: Text.AlignHCenter
@@ -105,6 +103,7 @@ Item {
             text: qsTr("Refresh \nBill")
             color: "lightseagreen"
             font.bold: true
+            font.pointSize: parent.height / 4
             anchors.centerIn: parent
             horizontalAlignment: Text.AlignHCenter
         }
@@ -130,6 +129,7 @@ Item {
             text: qsTr("Log \nOut")
             color: "red"
             font.bold: true
+            font.pointSize: parent.height / 4
             anchors.centerIn: parent
             horizontalAlignment: Text.AlignHCenter
         }
