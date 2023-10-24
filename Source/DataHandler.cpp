@@ -19,10 +19,6 @@ void DataHandle::queryItem(const QString &str, const QString &tableName)
         return;
     }
 
-    if(tableName.isEmpty()) {
-        return;
-    }
-
     QString col1;
     QString col2;
     QSqlQuery query;
@@ -156,16 +152,12 @@ QVariantMap DataHandle::getItemList(const int &i)
 }
 
 int DataHandle::getItemListLength()
-int DataHandle::getItemListLength()
 {
-    return itemList.length();
     return itemList.length();
 }
 
 void DataHandle::clearData()
-void DataHandle::clearData()
 {
-    itemList.clear();
     itemList.clear();
 }
 
@@ -179,11 +171,11 @@ void DataHandle::connect() {
 
     db = new QSqlDatabase(QSqlDatabase::addDatabase("QPSQL"));
     // remote
-//    db->setHostName("45.124.95.171");
-//    db->setPort(5432);
-//    db->setDatabaseName("cf_prj");
-//    db->setUserName("truong");
-//    db->setPassword("12345");
+    //    db->setHostName("45.124.95.171");
+    //    db->setPort(5432);
+    //    db->setDatabaseName("cf_prj");
+    //    db->setUserName("truong");
+    //    db->setPassword("12345");
     // local
     db->setHostName("localhost");
     db->setPort(5432);
@@ -195,7 +187,6 @@ void DataHandle::connect() {
         qDebug() << "Error connecting to PostgreSQL:";
         qDebug() << "Connection Name:" << db->connectionName();
         qDebug() << "Connection Options:" << db->connectOptions();
-        return;
         return;
     } else {
         qDebug() << "Connected to PostgreSQL!";

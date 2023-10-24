@@ -13,8 +13,6 @@ Item {
         var now = new Date();
         var day = ("0" + now.getDate()).slice(-2);
         var month = ("0" + (now.getMonth() + 1)).slice(-2);
-        var day = ("0" + now.getDate()).slice(-2);
-        var month = ("0" + (now.getMonth() + 1)).slice(-2);
         var year = now.getFullYear();
         var hours = ("0" + now.getHours()).slice(-2);
         var minutes = ("0" + now.getMinutes()).slice(-2);
@@ -246,11 +244,10 @@ Item {
                             height: billHeader.height
                             width: parent.width
                             //border.color: "black"
-                            anchors.horizontalCenter: parent.horizontalCenter                           
+                            anchors.horizontalCenter: parent.horizontalCenter
                             property int index: model.index
 
                             Rectangle {
-                                id: removeContainer
                                 id: removeContainer
                                 height: parent.height
                                 width: parent.width / 13
@@ -258,7 +255,6 @@ Item {
                                 anchors.margins: width / 20
                                 color: "transparent"
                                 Text {
-                                    id: removeBtn
                                     id: removeBtn
                                     text: "✘"
                                     font.bold: true
@@ -272,7 +268,6 @@ Item {
                                         for(var i = 0; i < models.selectModel.count; i++) {
                                             if(models.selectModel.get(i).index === item.index) {
                                                 models.selectModel.remove(i)
-                                                break
                                                 break
                                             }
                                         }
@@ -444,7 +439,6 @@ Item {
                     }
                     Text {
                         id: totalCost
-                        text: totalCostValue + ".000"
                         text: totalCostValue + ".000"
                         font.pointSize: dateTime.font.pointSize
                         anchors.bottom: parent.bottom

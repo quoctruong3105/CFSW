@@ -65,37 +65,6 @@ ApplicationWindow {
         color: defaultColor
         visible: !loginCotainer.visible
 
-    Rectangle {
-        id: loginCotainer
-        width: parent.width
-        height: parent.height
-        color: defaultColor
-        visible: !loginPage.isValid
-        LoginPage {
-            id: loginPage
-            width: parent.width
-            height: parent.height
-        }
-    }
-
-    Rectangle {
-        id: content
-        width: parent.width
-        height: parent.height
-        color: defaultColor
-        visible: !loginCotainer.visible
-
-        Rectangle {
-            id: containMenuView
-            width: parent.width / 1.5
-            height: parent.height - containBar.height
-            anchors {
-                top: containBar.bottom
-                left: parent.left
-                bottom: parent.bottom
-                leftMargin: parent.width / 250
-                bottomMargin: parent.width / 250
-            }
         Rectangle {
             id: containMenuView
             width: parent.width / 1.5
@@ -115,12 +84,6 @@ ApplicationWindow {
                 height: parent.height
             }
         }
-            MenuView {
-                id: menuView
-                width: parent.width
-                height: parent.height
-            }
-        }
 
         Rectangle {
             id: containBillView
@@ -130,21 +93,7 @@ ApplicationWindow {
                 left: containMenuView.right
                 bottom: containMenuView.bottom
             }
-        Rectangle {
-            id: containBillView
-            width: parent.width - containMenuView.width
-            height: containMenuView.height
-            anchors {
-                left: containMenuView.right
-                bottom: containMenuView.bottom
-            }
 
-            BillView {
-                id: billView
-                width: parent.width
-                height: parent.height
-            }
-        }
             BillView {
                 id: billView
                 width: parent.width
