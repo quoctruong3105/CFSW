@@ -27,7 +27,7 @@ Item {
 
         Page {
             id: cakePage
-            CakePageCotent {
+            CakePageContent {
                 id: cakePageContent
             }
         }

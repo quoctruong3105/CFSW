@@ -3,6 +3,7 @@ QT += sql
 QT += core widgets printsupport
 QT += network
 
+
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
@@ -11,6 +12,10 @@ HEADERS += \
     Include/BillGenerator.h \
     Include/DataHandler.h \
     Include/Account.h \
+    Include/Discount.h \
+    Include/InternetChecker.h \
+    Include/Inventory.h \
+    Include/PreCondition.h \
     Include/QRPayment.h \
     Include/Worker.h \
     Include/WorkerController.h
@@ -19,6 +24,10 @@ SOURCES += \
     Source/Account.cpp \
     Source/BillGenerator.cpp \
     Source/DataHandler.cpp \
+    Source/Discount.cpp \
+    Source/InternetChecker.cpp \
+    Source/Inventory.cpp \
+    Source/PreCondition.cpp \
     Source/QRPayment.cpp \
     Source/Worker.cpp \
     Source/WorkerController.cpp \
@@ -42,3 +51,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES += \
     Credentials/TransactionCredential.json \
     Tools/CheckQRPayment.py \
+    Tools/ToolManager.py \

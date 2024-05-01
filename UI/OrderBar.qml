@@ -3,11 +3,11 @@ import QtQuick.Controls 2.15
 
 Item {
     property color onClickedCoor: root.defaultColor
-    property color localDefaultColor: "#a3a3cc"
+    property color orderBtnDefaultColor: "#C5B190"
 
     function updateBtn(nameOn, nameOff) {
         menuView.stackView.clear()
-        nameOff.color = localDefaultColor
+        nameOff.color = orderBtnDefaultColor
         nameOn.color = onClickedCoor
         if(nameOn === drinkBtnId) {
             menuView.stackView.push(menuView.drinkPage)
@@ -18,7 +18,7 @@ Item {
 
     Component.onCompleted: {
         menuView.stackView.push(menuView.drinkPage)
-        cakeBtnId.color = localDefaultColor
+        cakeBtnId.color = orderBtnDefaultColor
         drinkBtnId.color = onClickedCoor
     }
 
@@ -33,7 +33,6 @@ Item {
             anchors.top: parent.top
             anchors.left: parent.left
             anchors.right: cakeBtnId.left
-            anchors.rightMargin: parent.height / 10
             Text {
                 text: qsTr("DRINK")
                 font.bold: true

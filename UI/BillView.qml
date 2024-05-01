@@ -3,11 +3,11 @@ import QtQuick.Controls
 
 Item {
     property int totalCostValue
-    //property alias itemModel: itemSelection.model
     property int totalQuantityValue
     property alias currentTime: dateTime
     property alias billBackGround: billBackGround
     property alias cardNo: cardNo
+    property alias billHeadFontSize: billHeadDecorTxt.font.pointSize
 
     function updateTime() {
         var now = new Date();
@@ -23,18 +23,29 @@ Item {
 
     function updateTotal() {
         totalCostValue = 0
+        var newCost = 0
         for(var i = 0; i < models.selectModel.count; ++i) {
-            var upCost = 0
-            if(models.selectModel.get(i).isSizeL) {
-                upCost = 5
+            if(!models.selectModel.get(i).isCake) {
+                for(var j = 0; j < models.drinkModel.count; ++j) {
+                    if(models.drinkModel.get(j).drink === models.selectModel.get(i).drink) {
+                        var vals = models.drinkModel.get(j)
+                        break
+                    }
+                }
+                if(models.selectModel.get(i).isSizeL) {
+                    newCost = vals.lcost
+                } else {
+                    newCost = vals.cost
+                }
+                models.selectModel.setProperty(i, "cost", newCost)
             }
 
             totalCostValue += (models.selectModel.get(i).cost +
-                               models.selectModel.get(i).extraCost + upCost) * models.selectModel.get(i).quantity
+                               models.selectModel.get(i).extraCost) * models.selectModel.get(i).quantity
         }
         totalQuantityValue = 0
-        for(var j = 0; j < models.selectModel.count; ++j) {
-            totalQuantityValue += models.selectModel.get(j).quantity
+        for(var k = 0; k < models.selectModel.count; ++k) {
+            totalQuantityValue += models.selectModel.get(k).quantity
         }
     }
 
@@ -70,19 +81,19 @@ Item {
                 color: defaultColor
 
                 Text {
+                    id: billHeadTxt
                     text: qsTr("HÓA ĐƠN")
                     font.bold: true
                     font.pointSize: parent.height / 3
                     anchors.verticalCenter: parent.verticalCenter
                 }
-
-                Rectangle {
-                    id: cfIcon
-                    height: parent.height / 1.2
-                    width: height / 1.5
-                    color: "transparent"
-                    anchors.right: parent.right
+                Text {
+                    id: billHeadDecorTxt
+                    text: qsTr("✿══╡°˖✧◦•●◉✿✿◉●•◦✧˖°╞══✿")
+                    font.pointSize: parent.height / 3
                     anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    opacity: 0.1
                 }
             }
             Rectangle {
@@ -208,6 +219,7 @@ Item {
                 }
 
             }
+
             Rectangle {
                 id: itemSelection
                 width: parent.width / 1.05
@@ -243,7 +255,6 @@ Item {
                             id: item
                             height: billHeader.height
                             width: parent.width
-                            //border.color: "black"
                             anchors.horizontalCenter: parent.horizontalCenter
                             property int index: model.index
 
@@ -279,7 +290,6 @@ Item {
                                 id: drinkNameContainer
                                 height: parent.height
                                 width: parent.width * 8 / 28
-                                //color: "transparent"
                                 anchors.left: removeContainer.right
                                 Text {
                                     id: drinkName
@@ -293,7 +303,7 @@ Item {
 
                             Rectangle {
                                 id: upSizeContainer
-                                //border.color: "black"
+                                visible: !model.isCake
                                 height: parent.height / 1.6
                                 width: height / 1.2
                                 anchors.verticalCenter: parent.verticalCenter
@@ -316,7 +326,7 @@ Item {
 
                             Rectangle {
                                 id: toppingContainer
-                                //border.color: "black"
+                                visible: !model.isCake
                                 width: parent.width / 6
                                 height: parent.height
                                 anchors.left: upSizeContainer.right
@@ -331,7 +341,6 @@ Item {
 
                             Rectangle {
                                 id: factorContainer
-                                //border.color: "black"
                                 height: parent.height
                                 width: parent.width / 5
                                 color: "transparent"
@@ -352,7 +361,9 @@ Item {
                                 anchors.right: parent.right
                                 Text {
                                     id: cost
-                                    text: (model.cost + model.extraCost + (model.isSizeL ? 5 : 0)) * factor.value + ".000"
+                                    text: (!model.isCake)
+                                          ? (model.cost + model.extraCost) * factor.value + ".000"
+                                          : (model.cost) * factor.value + ".000"
                                     font.pointSize: drinkName.font.pointSize
                                     anchors.centerIn: parent
                                 }
@@ -446,6 +457,73 @@ Item {
                     }
                 }
             }
+
+//            Rectangle {
+//                id: dectectDiscount
+//                width: payContainer.width
+//                height: payContainer.height * 2
+//                border.color: "lightgrey"
+//                anchors {
+//                    horizontalCenter: parent.horizontalCenter
+//                    top: payContainer.bottom
+//                }
+//                Rectangle {
+//                    id: discountContainer
+//                    width: parent.width - parent.border.width * 2
+//                    height: parent.height - parent.border.width * 2
+//                    anchors.top: parent.top
+//                    anchors.left: parent.left
+//                    anchors.topMargin: parent.border.width
+//                    anchors.leftMargin: parent.border.width
+//                    Rectangle {
+//                        id: discountItemContainer
+//                        width: parent.width
+//                        height: parent.height - discountTotalContainer.height
+//                        anchors.top: parent.top
+//                        //color: "red"
+//                        Flickable {
+//                            width: parent.width
+//                            height: parent.height
+//                            anchors.centerIn: parent
+//                            clip: true
+//                            ListView {
+//                                width: parent.width
+//                                height: parent.height
+//                                anchors.centerIn: parent
+//                                clip: true
+//                                model: models.discountModel
+//                                delegate: Rectangle {
+//                                    height: parent.height
+//                                    width: parent.width
+//                                    anchors.horizontalCenter: parent.horizontalCenter
+//                                    Rectangle {
+//                                        width: parent.width
+//                                        height: parent.height
+//                                        border.color: "black"
+//                                        Text {
+//                                            text: model.drink
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                    Rectangle {
+//                        id: discountTotalContainer
+//                        width: parent.width
+//                        height: parent.height / 4
+//                        //color: "red"
+//                        anchors.bottom: parent.bottom
+//                        Text {
+//                            id: discountTotalTxt
+//                            text: "Tổng số tiền được giảm"
+//                            anchors.verticalCenter: parent.verticalCenter
+//                            font.pointSize: cardTxt.font.pointSize
+//                        }
+//                    }
+//                }
+//            }
+
             Rectangle {
                 id: billFooter
                 height: parent.height / 30
@@ -458,10 +536,27 @@ Item {
                     width: height / 1.5
                     source: "qrc:/img/app_icon.ico"
                     anchors.right: parent.right
+//                    property real rotationAngle: 0
+//                    Timer {
+//                        id: rotationTimer
+//                        interval: 5
+//                        repeat: true
+//                        running: true
+//                        onTriggered: {
+//                            swIcon.rotationAngle += 1
+//                        }
+//                    }
+//                    SequentialAnimation {
+//                        running: true
+//                        loops: 1
+//                    }
+//                    onRotationAngleChanged: {
+//                        swIcon.rotation = swIcon.rotationAngle
+//                    }
                 }
                 Text {
                     font.pointSize: parent.height / 3
-                    text: qsTr("CFSW v1.0  |  Powered by T&T Studio")
+                    text: qsTr("CFSW v1.0  |  Powered by T&T Studio®")
                     anchors.right: swIcon.left
                     anchors.verticalCenter: swIcon.verticalCenter
                     anchors.rightMargin: width / 15

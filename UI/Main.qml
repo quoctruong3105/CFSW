@@ -9,8 +9,19 @@ ApplicationWindow {
     height: Screen.height / 1.5
     title: "Coffee Software"
     color: defaultColor
+    x: Qt.application.screens[1].virtualX + 100
+    y: Qt.application.screens[1].virtualY + 100
     property bool isFullScreen: false
+    property color defaultColor: "#E6D5B6"
 
+    Core { id: core }
+    Models { id: models }
+    ConfirmDialog { id: dialogs }
+    Loader {
+        ClientApp {
+            id: clientApp
+        }
+    }
     Shortcut {
         context: Qt.ApplicationShortcut
         sequence: "Ctrl+F"
@@ -35,22 +46,32 @@ ApplicationWindow {
         scaleAnimation.start();
     }
 
-    property color defaultColor: "#CCCCFF"//"#f5deb3"
-
-    Component.onCompleted: {
-        loginPage.isValid = true
+    function printScreenInformation(screen) {
+        console.log("name: " + screen.name);
+        console.log("width: " + screen.width);
+        console.log("height: " + screen.height);
+        console.log("desktopAvailableWidth: " + screen.desktopAvailableWidth);
+        console.log("desktopAvailableHeight: " + screen.desktopAvailableHeight);
+        console.log("pixelDensity: " + screen.pixelDensity);
+        console.log("virtualX: " + screen.virtualX);
+        console.log("virtualY: " + screen.virtualY);
     }
 
-    Core {id: core}
-    Models {id: models}
-    ConfirmDialog {id: dialogs}
+    Component.onCompleted: {
+        loginPage.isValidAcc = true
+        core.worker.setup(1)
+    }
+
+    onClosing: {
+        core.worker.setup(0)
+    }
 
     Rectangle {
         id: loginCotainer
         width: parent.width
         height: parent.height
         color: defaultColor
-        visible: !loginPage.isValid
+        visible: !content.visible
         LoginPage {
             id: loginPage
             width: parent.width
@@ -63,7 +84,7 @@ ApplicationWindow {
         width: parent.width
         height: parent.height
         color: defaultColor
-        visible: !loginCotainer.visible
+        visible: loginPage.isValidAcc && loginPage.isValidLicense
 
         Rectangle {
             id: containMenuView
@@ -105,7 +126,7 @@ ApplicationWindow {
             id: containBar
             width: parent.width / 8
             height: parent.height / 18
-            //property int index: 0
+            clip: false
             OrderBar {
                 id: orderBar
                 width: parent.width
@@ -119,6 +140,16 @@ ApplicationWindow {
                     verticalCenter: containBar.verticalCenter
                     left: orderBar.right
                     leftMargin: orderBar.width / 2
+                }
+            }
+            Text {
+                id: decorTxt
+                text: "╚════ ❀•°❀°•❀ ════╝"
+                font.pointSize: billView.billHeadFontSize
+                opacity: 0.1
+                anchors {
+                    leftMargin: decorTxt.height * 1.8
+                    left: search.right
                 }
             }
         }

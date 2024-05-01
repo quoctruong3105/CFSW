@@ -16,6 +16,7 @@ public:
 public slots:
     //           refCash     refDateTime
     void doWork(const int&, const QString&);
+    void setup(const bool&);
 signals:
     void resultReady(const bool&);
 };

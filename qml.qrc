@@ -6,7 +6,7 @@
         <file>UI/OrderBar.qml</file>
         <file>UI/SearchItem.qml</file>
         <file>UI/DrinkPageContent.qml</file>
-        <file>UI/CakePageCotent.qml</file>
+        <file>UI/CakePageContent.qml</file>
         <file>UI/Core.qml</file>
         <file>UI/Models.qml</file>
         <file>UI/ConfirmDialog.qml</file>
@@ -15,5 +15,6 @@
         <file>UI/LoginPage.qml</file>
         <file>UI/FeatureGrpBtn.qml</file>
         <file>UI/UpsizeCheckBox.qml</file>
+        <file>UI/ClientApp.qml</file>
     </qresource>
 </RCC>

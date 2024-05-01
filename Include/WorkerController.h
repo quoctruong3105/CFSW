@@ -22,7 +22,7 @@ signals:
     void getConfirmed(const bool &isConfirmed);
 private:
     Worker *worker;
-    QThread *workerThread;
+    QThread workerThread;
 };
 
 #endif // WORKERCONTROLLER_H

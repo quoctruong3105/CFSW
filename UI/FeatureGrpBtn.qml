@@ -18,6 +18,61 @@ Item {
         }
     }
 
+    // Waiting
+//    Rectangle {
+//        id: noName1
+//        height: parent.height / 1.2
+//        width: parent.width / 6
+//        radius: height / 2
+//        anchors {
+//            right: noName.left
+//            rightMargin: width / 5
+//            verticalCenter: parent.verticalCenter
+//        }
+//        antialiasing: true
+//        Text {
+//            text: qsTr("")
+//            color: "dodgerblue"
+//            font.pointSize: parent.height / 4
+//            font.bold: true
+//            anchors.centerIn: parent
+//            horizontalAlignment: Text.AlignHCenter
+//        }
+//        MouseArea {
+//            anchors.fill: parent
+//            onClicked: {
+//                //dialogs.callDialog(findBillBtn)
+//            }
+//        }
+//    }
+
+
+    Rectangle {
+        id: eventInfoBtn
+        height: parent.height / 1.2
+        width: parent.width / 6
+        radius: height / 2
+        anchors {
+            right: findBillBtn.left
+            rightMargin: width / 5
+            verticalCenter: parent.verticalCenter
+        }
+        antialiasing: true
+        Text {
+            text: qsTr("Event \n📰")
+            color: "dimgray"
+            font.pointSize: parent.height / 4
+            font.bold: true
+            anchors.centerIn: parent
+            horizontalAlignment: Text.AlignHCenter
+        }
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+            }
+        }
+    }
+
     Rectangle {
         id: findBillBtn
         height: parent.height / 1.2
@@ -30,7 +85,7 @@ Item {
         }
         antialiasing: true
         Text {
-            text: qsTr("Find Bill \n⌕")
+            text: qsTr("Find Bill \n🔎")
             color: "dodgerblue"
             font.pointSize: parent.height / 4
             font.bold: true
@@ -56,8 +111,8 @@ Item {
         }
         antialiasing: true
         Text {
-            text: qsTr("Clear Bill \n⟳")
-            color: "lightseagreen"
+            text: qsTr("Clean Bill \n🧹")
+            color: "red"
             font.bold: true
             font.pointSize: parent.height / 4
             anchors.centerIn: parent
@@ -82,8 +137,8 @@ Item {
         }
         antialiasing: true
         Text {
-            text: qsTr("Log Out \n⬎")
-            color: "red"
+            text: qsTr("Log Out \n🚪")
+            color: "peru"
             font.bold: true
             font.pointSize: parent.height / 4
             anchors.centerIn: parent

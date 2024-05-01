@@ -2,7 +2,8 @@
 
 QList<QVariantMap> QRPayment::listBankInfo;
 
-QRPayment::QRPayment(QObject *parent) : QObject{parent} {
+QRPayment::QRPayment(QObject *parent) : QObject{parent}
+{
     // Fetch list banks
     if(listBankInfo.isEmpty()) {
         QSqlQuery query;
@@ -27,8 +28,8 @@ QVariant QRPayment::genQRCode(const int &bankId, const int &amount)
 
     QVariantMap apiRequest = getBankInfo(bankId);
     apiRequest.insert("amount", amount);
-    apiRequest.insert("template", "qr_only");
-    apiRequest.insert("addInfo", "Anh iu Kem");
+    apiRequest.insert("template", "print");
+    apiRequest.insert("addInfo", "Thanh toán Hi Coffee");
 
     QJsonDocument jsonDocument = QJsonDocument::fromVariant(apiRequest);
     QByteArray jsonData = jsonDocument.toJson();

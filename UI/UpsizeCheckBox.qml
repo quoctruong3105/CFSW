@@ -43,7 +43,4 @@ Item {
             }
         }
     }
-    Component.onCompleted: {
-        updateCheckBox(isSizeL)
-    }
 }

@@ -1,0 +1,3 @@
+- Auto check Available or sold out, toppings
+- Discount feature
+- Manager All in one software

@@ -51,6 +51,7 @@ Item {
                                     if (add.hasOwnProperty(key)) {
                                         var value = add[key];
                                         totalToppingCostValue += value
+                                        console.log(key, value)
                                     }
                                 }
                                 models.selectModel.setProperty(i, "extraCost", totalToppingCostValue)

@@ -7,6 +7,7 @@ Item {
     height: parent.height
     property int numOfItemOneRow: 3
     property alias catigory: catigory
+    property bool initial: true
 
     Rectangle {
         id: header
@@ -15,9 +16,16 @@ Item {
         color: "white"
         Rectangle {
             width: parent.width
-            height: parent.height / 3.2
+            height: parent.height / 2.5
             color: defaultColor
             anchors.top: parent.top
+            clip: true
+            Text {
+                text: qsTr("╔⏤⏤⏤╝❀╚⏤⏤⏤╗.•° ✿ °•..•° ✿ °•..•° ✿ °•..•° ✿ °•..•° ✿ °•..•° ✿ °•.")
+                height: parent.height
+                font.pointSize: billView.billHeadFontSize
+                opacity: 0.1
+            }
         }
 
         ComboBox {
@@ -31,7 +39,7 @@ Item {
                 right: parent.right
                 rightMargin: width / 22
             }
-            model: ["Tất cả mặt hàng", "Cà phê", "Sinh tố", "Nước ép", "Khác"]
+            model: [ "Tất cả mặt hàng", "Trà", "Cà phê", "Nước ép", "Sinh tố", "Khác" ]
             delegate: ItemDelegate {
                 width: catigory.width
                 contentItem: Text {
@@ -83,22 +91,23 @@ Item {
                 border.width: catigory.visualFocus ? 3 : 2
             }
             onCurrentValueChanged: {
-                search.searchTxt.text = ""
-                if(currentValue === "Tất cả mặt hàng") {
+                if(initial == false) {
                     models.drinkModel.clear()
-                    core.dh.queryItem("", "drinks")
-                } else if(currentValue === "Sinh tố") {
-                    models.drinkModel.clear()
-                    core.dh.queryItem("sinh to", "drinks")
-                } else if(currentValue === "Nước ép") {
-                    models.drinkModel.clear()
-                    core.dh.queryItem("nuoc ep", "drinks")
-                } else if(currentValue === "Cà phê") {
-                    models.drinkModel.clear()
-                    core.dh.queryItem("ca phe", "drinks")
+                    if(currentValue === "Tất cả mặt hàng") {
+                        core.dh.queryItem("", 0, "drinks")
+                    } else if(currentValue === "Trà") {
+                        core.dh.queryItem("tra", 1, "drinks")
+                    } else if(currentValue === "Cà phê") {
+                        core.dh.queryItem("ca phe", 1, "drinks")
+                    } else if(currentValue === "Nước ép") {
+                        core.dh.queryItem("nuoc ep", 1, "drinks")
+                    } else if(currentValue === "Sinh tố") {
+                        core.dh.queryItem("sinh to", 1, "drinks")
+                    } else if(currentValue === "Khác") {
+                        core.dh.queryItem("khac", 1, "drinks")
+                    }
+                    models.dummyData(models.drinkModel)
                 }
-                models.dummyData(models.drinkModel)
-                models.dummyData(models.drinkModel)
             }
         }
     }
@@ -108,10 +117,8 @@ Item {
         height: parent.height - header.height
         anchors.top: header.bottom
         clip: true
-
         Flickable {
             id: flickable
-            anchors.fill: parent
             contentWidth: stackView.width
             contentHeight: stackView.height
             GridView {
@@ -122,27 +129,26 @@ Item {
                 cellHeight: (cellWidth) / numOfItemOneRow
                 model: models.drinkModel
                 clip: true
-
                 delegate: Rectangle {
                     id: drinkInfoContainer
                     width: gridView.cellWidth / 1.5
                     height: gridView.cellHeight / 1.5
-                    //color: index % 2 === 0 ? "lightblue" : "lightgray"
+                    radius: drinkImg.radius
+                    color: "lightblue"
 
                     Row {
                         id: row
                         width: height
                         height: parent.height
                         spacing: 2
-
                         Rectangle {
                             id: drinkImg
                             width: parent.height
                             height: width
-                            radius: height / 2
-                            color: index % 2 === 0 ? "limegreen" : "red"
+                            radius: height / 6
+                            color: (model.state) ? "limegreen" : "red"
                             Text {
-                                text: (index % 2 === 0) ? "◢✥◣ \nAvailable \n◥✥◤" : "◢✥◣ \nSold out \n◥✥◤"
+                                text: (model.state) ? "Available" : "Sold out"
                                 rotation: -30
                                 anchors.centerIn: parent
                                 color: "white"
@@ -200,13 +206,14 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            models.selectModel.append({ "index" : 1, "drink": drinkName.text,
-                                                        "cost": parseFloat(costName.text.slice(0, costName.text.length - 4)),
-                                                        "quantity" : 1, "add" : ({}), "extraCost" : 0, "isSizeL" : 0 })
+                            models.selectModel.append({ "index" : 1, "drink": model.drink, "cost": model.cost,
+                                                        "quantity" : 1, "add" : ({}), "extraCost" : 0, "isSizeL" : 0,
+                                                        "isCake" : false })
                         }
                     }
                 }
             }
+
             ScrollBar.vertical: ScrollBar {
                 policy: ScrollBar.AsNeeded
                 height: flickable.height

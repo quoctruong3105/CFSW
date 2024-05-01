@@ -5,7 +5,8 @@ QString BillGenerator::passWifi;
 QString BillGenerator::address;
 QString BillGenerator::phoneNum;
 
-BillGenerator::BillGenerator(QObject *parent) : QObject{parent} {
+BillGenerator::BillGenerator(QObject *parent) : QObject{parent}
+{
     // Fetch const values
     if(shopName.isEmpty()) {
         QSqlQuery query;
@@ -23,7 +24,7 @@ BillGenerator::BillGenerator(QObject *parent) : QObject{parent} {
 
 void BillGenerator::collectItemInfo(const int &id, const QString &name, const int &total,
                                     const int &quantity, const QString &extraJson,
-                                    const bool &isSizeL)
+                                    const bool &isSizeL, const bool &isCake)
 {
     ItemModel item;
     item.id = id;
@@ -31,6 +32,7 @@ void BillGenerator::collectItemInfo(const int &id, const QString &name, const in
     item.total = total;
     item.quantity = quantity;
     item.isSizeL = isSizeL;
+    item.isCake = isCake;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(extraJson.toUtf8());
     QVariantMap extra = jsonDoc.toVariant().toMap();
     if(!extra.isEmpty()) {
@@ -98,6 +100,23 @@ void BillGenerator::printTag(const int &id, const QString &drinkName,
     qDebug() << "print tag.";
 }
 
+void BillGenerator::saveQutyChangeToDB(Inventory* ivnManager, int index)
+{
+    if(listItem.at(index).isCake) {                                // Update Cake quantity
+        ivnManager->updateItemQuantityToDB("cake", 1, listItem.at(index).name);
+    } else {                                                       // Update material quantity
+        QMap<int, int> drinkCompMap = ivnManager->getDrinkComp(listItem.at(index).name, listItem.at(index).isSizeL);
+        for(auto it = drinkCompMap.begin(); it != drinkCompMap.end(); ++it) {
+            ivnManager->updateItemQuantityToDB("material", it.value(), QString::number(it.key()));
+        }
+        if(!listItem.at(index).toppings.isEmpty()) {               // Update topping quantity
+            for(auto tp = listItem.at(index).toppings.begin(); tp != listItem.at(index).toppings.end(); ++tp) {
+                ivnManager->updateItemQuantityToDB("topping", ivnManager->getToppingQntyPerDrink(tp.key()), tp.key());
+            }
+        }
+    }
+}
+
 void BillGenerator::printBill()
 {
     // Create a QTextDocument for text rendering
@@ -127,24 +146,28 @@ void BillGenerator::printBill()
     QList<size_t> quantity;
     QList<size_t> total;
     QList<QMap<QString, int>> topping;
+    Inventory *ivnManager = new Inventory(); // Use for save all item changed to DB
     int toppingLength = 0;
     int id = 1;
     for(auto i = 0; i < listItem.count(); ++i) {
-        QString nameAndSize = QString(listItem.at(i).name + " (%1)").arg(((listItem.at(i).isSizeL) ? "L" : "M"));
+        QString nameAndSize = (listItem.at(i).isCake)
+                                  ? QString(listItem.at(i).name +  " (Cake)")
+                                  : QString(listItem.at(i).name + " (%1)").arg(((listItem.at(i).isSizeL) ? "L" : "M"));
         item.append(nameAndSize);
         quantity.append(listItem.at(i).quantity);
         total.append(listItem.at(i).total);
         topping.append(listItem.at(i).toppings);
 
-
-        //Print sub tags
+        //Print sub tags and decrease item's quantity
         if(listItem.at(i).quantity > 1) {
             for(int j = 0; j < listItem.at(i).quantity; ++j) {
                 printTag(id++, nameAndSize, listItem.at(i).toppings,
                          listItem.at(i).total / listItem.at(i).quantity);
+                saveQutyChangeToDB(ivnManager, i);
             }
         } else {
             printTag(id++, nameAndSize, listItem.at(i).toppings, listItem.at(i).total);
+            saveQutyChangeToDB(ivnManager, i);
         }
 
         // Calculate to add number of toppings in table
@@ -239,7 +262,8 @@ void BillGenerator::printBill()
     doc.drawContents(&painter);
     painter.end();
     delete table;
-    fromBillToDB();
+    delete ivnManager;
+    saveBillToDB();
     qDebug() << "print bill successfully.";
 }
 
@@ -283,7 +307,7 @@ QString BillGenerator::generateRcptId() {
     return chain;
 }
 
-void BillGenerator::fromBillToDB()
+void BillGenerator::saveBillToDB()
 {
     QJsonArray itemsArr;
 

@@ -1,17 +1,17 @@
 #include <Include/Worker.h>
 
-Worker::Worker(QObject *parent) : QObject{parent} {
+Worker::Worker(QObject *parent) : QObject{parent}
+{
 
 }
 
 void Worker::doWork(const int &refCash, const QString &refDateTime)
 {
     bool res = false;
-    //qDebug() << QDir::current();
     QProcess confirmPayProcess;
     confirmPayProcess.setProgram("python");
     QStringList arguments;
-    arguments << "E:/CFSW/Tools/CheckQRPayment.py";//<< QString(QDir::currentPath() + "/Tools/CheckQRPayment.py");
+    arguments << "E:/CFSW/Tools/CheckQRPayment.py";
     confirmPayProcess.setArguments(arguments);
     confirmPayProcess.start();
 
@@ -28,4 +28,16 @@ void Worker::doWork(const int &refCash, const QString &refDateTime)
         res = true;
     }
     emit resultReady(res);
+}
+
+void Worker::setup(const bool& state)
+{
+    qDebug() << QString::number(state);
+    QProcess confirmPayProcess;
+    confirmPayProcess.setProgram("python");
+    QStringList arguments;
+    arguments << "E:/CFSW/Tools/ToolManager.py" << QString::number(state);
+    confirmPayProcess.setArguments(arguments);
+    confirmPayProcess.start();
+    confirmPayProcess.waitForFinished(-1);
 }

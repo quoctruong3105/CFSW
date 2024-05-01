@@ -5,7 +5,6 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
-#include <QSqlQueryModel>
 #include <QVariantMap>
 #include <QList>
 #include <QJsonDocument>
@@ -23,13 +22,13 @@ public:
 signals:
 public slots:
     // Query drinks, cakes, toppings, accounts valid
-    void queryItem(const QString&, const QString&);
-
-    // Update log in, log out time
-    void updateAccLog(const bool&, const QString&, const QString&);
+    void queryItem(const QString&, const bool&, const QString&);
 
     // Query bill
     QVariantMap queryBill(const QString&);
+
+    // Update log in, log out time
+    void updateAccLog(const bool&, const QString&, const QString&);
 
     QVariantMap getItemList(const int &i);
     int getItemListLength();

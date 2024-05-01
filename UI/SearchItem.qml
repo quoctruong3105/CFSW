@@ -11,7 +11,7 @@ Item {
         running: false
         onTriggered: {
             busyIndicator.running = false
-            core.dh.queryItem(searchTxt.text, "drinks")
+            core.dh.queryItem(searchTxt.text, 0, "drinks")
             models.dummyData(models.drinkModel)
         }
     }
@@ -39,11 +39,16 @@ Item {
                 verticalCenter: containBar.verticalCenter
             }
             onTextEdited: {
-                if(models.drinkModel.count !== 0) {
-                    models.drinkModel.clear()
+                if(menuView.stackView.currentItem == menuView.drinkPage) {
+                    if(models.drinkModel.count !== 0) {
+                        models.drinkModel.clear()
+                    }
+                    delayTimer.restart()
+                    busyIndicator.running = true
+                    if(menuView.drinkPageContent.catigory.currentIndex != 0) {
+                        menuView.drinkPageContent.catigory.currentIndex = 0
+                    }
                 }
-                delayTimer.restart()
-                busyIndicator.running = true
             }
         }
         Rectangle {
@@ -75,6 +80,14 @@ Item {
                 onClicked: {
                     searchTxt.text = ""
                     scaleAnimator(searchText)
+                    if(menuView.stackView.currentItem == menuView.drinkPage) {
+                        models.drinkModel.clear()
+                        core.dh.queryItem("", 0, "drinks")
+                        models.dummyData(models.drinkModel)
+                        if(menuView.drinkPageContent.catigory.currentIndex != 0) {
+                            menuView.drinkPageContent.catigory.currentIndex = 0
+                        }
+                    }
                 }
             }
         }

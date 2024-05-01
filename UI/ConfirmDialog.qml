@@ -12,7 +12,6 @@ Item {
     property int mediumWidth1: menuView.stackView.width / 2
     property int mediumHeight1: menuView.stackView.height / 2
 
-
     function openDialogAtCenter(dialogName) {
         dialogName.x = (menuView.stackView.width - dialogName.width) / 2
         dialogName.y = (menuView.stackView.height - dialogName.height) / 2
@@ -45,7 +44,7 @@ Item {
         }
         onAccepted: {
             core.dh.updateAccLog(false, billView.currentTime.text, core.currentAcc.getCurrentUser())
-            loginPage.isValid = false
+            loginPage.isValidAcc = false
             featureBtnGrp.resetAllToNormal()
         }
         onRejected: {
@@ -96,7 +95,7 @@ Item {
                 font.pointSize: height / 2
                 onTextChanged: {
                     if(text.length == 8) {
-                        models.dummyBillInfo(text)
+                        models.billModel.dummyBillInfo(text)
                     }
                 }
             }
@@ -352,7 +351,7 @@ Item {
 
         Timer {
             id: checkPayTimer
-            interval: 500
+            interval: 1300
             property int timeTry: 0
             repeat: timeTry < 100
             onTriggered: {
@@ -367,7 +366,6 @@ Item {
                 else {
                     timeTry++
                 }
-                console.log(timeTry, requestPayDialog.referDateTime)
             }
         }
 
@@ -409,8 +407,8 @@ Item {
                 onClicked: {
                     var qrCodeGen = core.qrPay.genQRCode(choosenBank.currentIndex,
                                                          billView.totalCostValue + "000")
-                    if(qrCodeGen != "") {
-                        qrCodeImg.source = qrCodeGen
+                    if(qrCodeGen !== "") {
+                        clientApp.qrCodeImg.source = qrCodeGen
                         genQRresult.text = "Tạo thanh toán thành công"
                         requestPayDialog.referDateTime = billView.currentTime.text
                         checkPayTimer.running = true
@@ -439,13 +437,14 @@ Item {
                 var itemData = itemModel.get(i);
 
                 core.billGen.collectItemInfo(itemData.index, itemData.drink,
-                            (itemData.cost + itemData.extraCost + ((itemData.isSizeL) ? 5 : 0)) *  itemData.quantity,
-                            itemData.quantity, JSON.stringify(itemData.add), itemData.isSizeL);
+                            (itemData.cost + itemData.extraCost) * itemData.quantity,
+                             itemData.quantity, JSON.stringify(itemData.add), itemData.isSizeL, itemData.isCake);
             }
             core.billGen.collectOtherInfo(billView.currentTime.text, core.currentAcc.getCurrentUser(),
                                           billView.totalCostValue, receiveCash, solu,
                                           billView.totalQuantityValue, billView.cardNo.text)
 
+            // Work with DB: save bill, decrease quantiy of material, cake, topping
             core.billGen.printBill()
 
             // Clear all Data of bill from UI and Core after printing bill
@@ -462,11 +461,15 @@ Item {
             discountCodeTxt.text = ""
             receiveCash.text = ""
             genQRresult.text = ""
-            qrCodeImg.source = ""
+            clientApp.qrCodeImg.source = ""
         }
 
         onRejected: {
             clearPayment()
+        }
+
+        onClosed:  {
+            models.drinkModel.refreshDrinkState()
         }
 
         Rectangle {
@@ -698,13 +701,6 @@ Item {
                             width: parent.width
                             height: choosenSolu.height * 4
                             y: parent.height / 60
-                            Image {
-                                id: qrCodeImg
-                                fillMode: Image.PreserveAspectFit
-                                height: parent.height * 5
-                                width: height / 3
-                                source: ""
-                            }
                         }
                     }
                     Rectangle {

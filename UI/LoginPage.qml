@@ -6,7 +6,16 @@ Rectangle {
     width: parent.width
     height: parent.height
     color: defaultColor
-    property bool isValid
+    property bool isValidAcc
+    property bool isValidLicense: core.preCondition.getLicenseState()
+
+    Image {
+        id: backgroundImg
+        width: parent.width
+        height: parent.height
+        source: "https://seotrends.com.vn/wp-content/uploads/2023/03/hinh-nen-anh-bia-dep.jpg"
+    }
+
     Image {
         id: swImg
         width: parent.width / 20
@@ -15,6 +24,32 @@ Rectangle {
         source: "qrc:/img/app_icon.ico"
         anchors {
             horizontalCenter: parent.horizontalCenter
+        }
+        Rectangle {
+            id: licenseContainer
+            width: usernameInput.width / 10
+            height: width
+            anchors.top: parent.bottom
+            anchors.topMargin: -width / 1.5
+            anchors.right: parent.right
+            anchors.rightMargin: -width / 3
+            color: "transparent"
+            Rectangle {
+                width: parent.width
+                height: width
+                radius: width / 2
+                color: (isValidLicense) ? "forestgreen" : "red"
+                antialiasing: true
+                Text {
+                    text: (isValidLicense) ? "✓" : "✕"
+                    color: "white"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    anchors.fill: parent
+                    font.pointSize: height / 1.8
+                    font.bold: true
+                }
+            }
         }
     }
 
@@ -55,11 +90,15 @@ Rectangle {
         anchors.top: passwordInput.bottom
         anchors.topMargin: width / 10
         onClicked: {
+            if(!isValidLicense) {
+                return
+            }
+
             var i
             for(i = 0; i < models.accModel.count; ++i) {
                 if(usernameInput.text === models.accModel.get(i).username) {
                     if(passwordInput.text === models.accModel.get(i).password) {
-                        isValid = 1
+                        isValidAcc = 1
                         core.currentAcc.setCurrentUser(usernameInput.text)
                         core.dh.updateAccLog(true, billView.currentTime.text, core.currentAcc.getCurrentUser())
                         usernameInput.text = ""
@@ -80,10 +119,10 @@ Rectangle {
     Rectangle {
         height: usernameInput.height
         width: usernameInput.width
-        color: defaultColor
+        color: "transparent"
         Text {
             id: errorLogin
-            text: ""
+            text: (!isValidLicense) ? "Thiết bị chưa được cấp bản quyền!" : ""
             font.pointSize: passwordInput.font.pointSize
             anchors.centerIn: parent
             color: "red"
