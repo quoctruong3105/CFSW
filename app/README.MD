@@ -1,6 +1,16 @@
-Main features:
-+ Connect and interact with database.
-+ Generate QR code to payment and automatically confirm when payment is success.
-+ Write and print bill, sub-tags.
-+ Estimate drink state (available or sold out) by current quantity of materials in inventory.
-+ Apply discount when there is a discount program set in database by manager.
+# CFSW - Coffee Software
+
+## Overview
+
+CFSW (Coffee Software) is a comprehensive solution designed to streamline operations for coffee shops. It provides features to manage customer interactions, handle payments, and track inventory efficiently.
+
+## Key Features
+
+- **Database Integration**: Seamlessly connect and interact with your database for real-time data management.
+- **QR Code Payment**: Generate QR codes for payments, automatically confirming transactions upon successful payment.
+- **Billing**: Write, print bills, and manage sub-tags effortlessly.
+- **Inventory Management**: Estimate drink availability based on current inventory levels, ensuring you never sell out unexpectedly.
+- **Discount Programs**: Apply discounts during checkout according to programs set by the manager in the database.
+
+## CI/CD/CT Pipeline
+- **TODO
