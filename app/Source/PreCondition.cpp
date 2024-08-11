@@ -1,4 +1,4 @@
-#include "Include/Precondition.h"
+#include "Include/PreCondition.h"
 #include <QDebug>
 
 PreCondition::PreCondition(QObject *parent) : QObject{parent}

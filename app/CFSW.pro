@@ -31,7 +31,7 @@ SOURCES += \
     Source/QRPayment.cpp \
     Source/Worker.cpp \
     Source/WorkerController.cpp \
-    Source/main.cpp \
+    Source/main.cpp
 
 RESOURCES += \
     qml.qrc \
