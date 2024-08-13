@@ -5,12 +5,12 @@ import QtQuick.Layouts 2.15
 ApplicationWindow {
     id: root
     visible: true
-    width: Screen.width / 1.5
-    height: Screen.height / 1.5
+    width: Screen.width / 1.68
+    height: Screen.height / 1.68
     title: "Coffee Software"
     color: defaultColor
-    x: Qt.application.screens[1].virtualX + 100
-    y: Qt.application.screens[1].virtualY + 100
+    x: 0 //Qt.application.screens[1].virtualX + 100
+    y: 100 //Qt.application.screens[1].virtualY + 100
     property bool isFullScreen: false
     property color defaultColor: "#E6D5B6"
 
@@ -59,12 +59,12 @@ ApplicationWindow {
 
     Component.onCompleted: {
         loginPage.isValidAcc = true
-        core.worker.setup(1)
+        core.worker.setup()
     }
 
-    onClosing: {
-        core.worker.setup(0)
-    }
+//    onClosing: {
+//        core.worker.setup()
+//    }
 
     Rectangle {
         id: loginCotainer

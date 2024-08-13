@@ -1,5 +1,7 @@
 #include <Include/Worker.h>
 
+QString Worker::targetRow = "1";
+
 Worker::Worker(QObject *parent) : QObject{parent}
 {
 
@@ -11,14 +13,19 @@ void Worker::doWork(const int &refCash, const QString &refDateTime)
     QProcess confirmPayProcess;
     confirmPayProcess.setProgram("python");
     QStringList arguments;
-    arguments << "E:/CFSW/Tools/CheckQRPayment.py";
+    qDebug() << "-----------------------------------";
+        qDebug() << (this->targetRow);
+    arguments << "E:/CFSW/app/Tools/CheckQRPayment.py" << this->targetRow;
     confirmPayProcess.setArguments(arguments);
     confirmPayProcess.start();
-
     confirmPayProcess.waitForFinished(-1);
 
+    qDebug() << (this->targetRow);
     qDebug() << "Acess Paycheck sheet exit with: " << confirmPayProcess.exitCode();
     QString receiveData = confirmPayProcess.readAllStandardOutput();
+    if(receiveData.isEmpty()) {
+        return;
+    }
     QStringList data = receiveData.split(",").toList();
 
     QDateTime timeGenQR = QDateTime::fromString(refDateTime, "dd/MM/yyyy hh:mm:ss");
@@ -30,13 +37,25 @@ void Worker::doWork(const int &refCash, const QString &refDateTime)
     emit resultReady(res);
 }
 
-void Worker::setup(const bool& state)
+void Worker::setTargetRow()
 {
-    qDebug() << QString::number(state);
+    QProcess findTargetRowProcess;
+    findTargetRowProcess.setProgram("python");
+    QStringList arguments;
+    arguments << "E:/CFSW/app/Tools/GetTargetRow.py";
+    findTargetRowProcess.setArguments(arguments);
+    findTargetRowProcess.start();
+    findTargetRowProcess.waitForFinished(-1);
+    this->targetRow = findTargetRowProcess.readAllStandardOutput();
+    qDebug() << this->targetRow;
+}
+
+void Worker::setup()
+{
     QProcess confirmPayProcess;
     confirmPayProcess.setProgram("python");
     QStringList arguments;
-    arguments << "E:/CFSW/Tools/ToolManager.py" << QString::number(state);
+    arguments << "E:/CFSW/app/Tools/ToolManager.py";
     confirmPayProcess.setArguments(arguments);
     confirmPayProcess.start();
     confirmPayProcess.waitForFinished(-1);

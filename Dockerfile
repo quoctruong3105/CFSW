@@ -1,6 +1,8 @@
 FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV QT_QPA_PLATFORM=xcb
+ENV DISPLAY=:1
 
 # Install dependencies for Qt Application
 RUN apt-get update && \
@@ -12,12 +14,21 @@ RUN apt-get update && \
     qt6-declarative-dev \
     qt6-tools-dev-tools \
     qt6-tools-dev \
+    qml6-module-qtquick-controls \
+    qml6-module-qtquick-layouts \
+    qml6-module-qtquick \
+    qml6-module-qtqml-workerscript \
+    qml6-module-qtquick-templates \
+    qml6-module-qtquick-window \
+    libqt6sql6-psql \
     cmake \
-    && apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install dependencies for Python tools
-# TODO
+    xvfb \
+    x11vnc \
+    python3.10 \
+    python3-pip \
+    && pip3 install google-auth google-auth-oauthlib google-api-python-client \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -31,4 +42,10 @@ WORKDIR /app/build
 
 RUN qmake6 ../CFSW.pro && make
 
-# CMD [ "./CFSW" ]
+# VNC port
+EXPOSE 5900
+
+# Start Xvfb with two screens, launch VNC server, and CFSW app
+# CMD Xvfb :1 -screen 0 1024x768x24 -screen 1 1024x768x24 & \
+#     x11vnc -display :1 -forever -nopw & \
+#     ./CFSW

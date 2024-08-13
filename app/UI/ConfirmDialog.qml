@@ -408,6 +408,7 @@ Item {
                     var qrCodeGen = core.qrPay.genQRCode(choosenBank.currentIndex,
                                                          billView.totalCostValue + "000")
                     if(qrCodeGen !== "") {
+                        core.worker.setTargetRow()
                         clientApp.qrCodeImg.source = qrCodeGen
                         genQRresult.text = "Tạo thanh toán thành công"
                         requestPayDialog.referDateTime = billView.currentTime.text

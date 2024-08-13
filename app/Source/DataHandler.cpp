@@ -197,7 +197,7 @@ void DataHandle::connect() {
     //    db->setUserName("truong");
     //    db->setPassword("12345");
     // local
-    db->setHostName("localhost");
+    db->setHostName("192.168.192.1");
     //  db->setHostName("hicoffee3105.hopto.org");
     db->setPort(5432);
     db->setDatabaseName("cf_prj");

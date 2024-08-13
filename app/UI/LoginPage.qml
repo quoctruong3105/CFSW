@@ -7,7 +7,7 @@ Rectangle {
     height: parent.height
     color: defaultColor
     property bool isValidAcc
-    property bool isValidLicense: core.preCondition.getLicenseState()
+    property bool isValidLicense: true // core.preCondition.getLicenseState()
 
     Image {
         id: backgroundImg

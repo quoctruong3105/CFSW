@@ -49,6 +49,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    Credentials/TransactionCredential.json \
     Tools/CheckQRPayment.py \
     Tools/ToolManager.py \
+    Tools/GetTagetRow.py \
+    Tools/const.py

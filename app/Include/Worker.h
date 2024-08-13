@@ -12,11 +12,13 @@ class Worker : public QObject
     Q_OBJECT
 public:
     Worker(QObject *parent = nullptr);
+    static QString targetRow;
 
 public slots:
     //           refCash     refDateTime
     void doWork(const int&, const QString&);
-    void setup(const bool&);
+    void setTargetRow();
+    void setup();
 signals:
     void resultReady(const bool&);
 };

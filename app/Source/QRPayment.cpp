@@ -74,7 +74,7 @@ bool QRPayment::startCheck(const int &receice)
     QProcess confirmPayProcess;
     confirmPayProcess.setProgram("python");
     QStringList arguments;
-    arguments << "E:/CFSW/Tools/CheckQRPayment.py";//<< QString(QDir::currentPath() + "/Tools/CheckQRPayment.py");
+    arguments << "E:/CFSW/app/Tools/CheckQRPayment.py";//<< QString(QDir::currentPath() + "/Tools/CheckQRPayment.py");
     confirmPayProcess.setArguments(arguments);
     confirmPayProcess.start();
 

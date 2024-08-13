@@ -4,11 +4,12 @@ import QtQuick.Controls 2.15
 ApplicationWindow {
     id: clientApp
     visible:  true
-    width: Screen.width / 2
-    height: Screen.height / 2
+    width: Screen.width / 2.5
+    height: Screen.height / 2.5
     //visibility: Window.FullScreen
-    x: Qt.application.screens[targetScreenIndex].virtualX
-    y: Qt.application.screens[targetScreenIndex].virtualY
+    //x: Qt.application.screens[targetScreenIndex].virtualX
+    x: root.x + root.width
+    y: root.y // Qt.application.screens[targetScreenIndex].virtualY
     property int targetScreenIndex: (hasMoreThanOneMonitor()) ? 0 : 1
     property alias qrCodeImg: qrCodeImg
 
