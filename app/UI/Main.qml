@@ -59,12 +59,8 @@ ApplicationWindow {
 
     Component.onCompleted: {
         loginPage.isValidAcc = true
-        core.worker.setup()
-    }
-
-//    onClosing: {
 //        core.worker.setup()
-//    }
+    }
 
     Rectangle {
         id: loginCotainer

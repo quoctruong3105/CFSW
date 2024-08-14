@@ -1,13 +1,14 @@
 import os
 from google_auth_oauthlib.flow import InstalledAppFlow
-from const import *
+
+SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+SPREADSHEET_ID = '19Wi-iRfwpqKGMwCvdUsr_UR5fAp7SmPPJJ-9wgDHQVk'
+TOKEN_PATH = os.path.join(f'{os.curdir}/token', "gg_sheet_token.json")
+CREDENTIAL_PATH = os.path.join(f'{os.curdir}/creds', "gg_sheet_credentials.json")
 
 def clean_old_token():
-    try:
-        os.remove(TOKEN_PATH)
-        print(f"File {TOKEN_PATH} deleted successfully.")
-    except FileNotFoundError:
-        print(f"File {TOKEN_PATH} not found.")
+    os.remove(TOKEN_PATH)
+    print(f"File {TOKEN_PATH} deleted successfully.")
 
 def main():
     if os.path.exists(TOKEN_PATH):

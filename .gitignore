@@ -1,3 +1,5 @@
 /app/build/
 /app/CFSW.pro.user
 /app/Plan
+/local/creds/
+/local/token/

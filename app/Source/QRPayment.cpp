@@ -70,11 +70,11 @@ QVariant QRPayment::genQRCode(const int &bankId, const int &amount)
 
 bool QRPayment::startCheck(const int &receice)
 {
-    //qDebug() << QDir::current();
     QProcess confirmPayProcess;
-    confirmPayProcess.setProgram("python");
+    confirmPayProcess.setProgram("python3");
     QStringList arguments;
-    arguments << "E:/CFSW/app/Tools/CheckQRPayment.py";//<< QString(QDir::currentPath() + "/Tools/CheckQRPayment.py");
+    // arguments << "E:/CFSW/app/Tools/CheckQRPayment.py";
+    arguments << QString(QDir::currentPath() + "/Tools/CheckQRPayment.py");
     confirmPayProcess.setArguments(arguments);
     confirmPayProcess.start();
 
@@ -82,7 +82,6 @@ bool QRPayment::startCheck(const int &receice)
 
     qDebug() << "Acess Paycheck sheet exit with: " << confirmPayProcess.exitCode();
     int res = confirmPayProcess.readAllStandardOutput().toInt();
-    //qDebug() << res;
     if(res == receice) {
         return true;
     }

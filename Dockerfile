@@ -42,10 +42,18 @@ WORKDIR /app/build
 
 RUN qmake6 ../CFSW.pro && make
 
+RUN mkdir Tools token
+
+WORKDIR /app/build/Tools
+
+COPY /Tools .
+
+WORKDIR /app/build
+
 # VNC port
 EXPOSE 5900
 
 # Start Xvfb with two screens, launch VNC server, and CFSW app
-# CMD Xvfb :1 -screen 0 1024x768x24 -screen 1 1024x768x24 & \
-#     x11vnc -display :1 -forever -nopw & \
+# CMD Xvfb :1 -screen 0 1920x1080x24 & \
+#     x11vnc -display :1 -forever -nopw -rfbport 5900 & \
 #     ./CFSW

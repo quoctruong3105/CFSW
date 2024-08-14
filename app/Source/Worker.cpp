@@ -11,16 +11,15 @@ void Worker::doWork(const int &refCash, const QString &refDateTime)
 {
     bool res = false;
     QProcess confirmPayProcess;
-    confirmPayProcess.setProgram("python");
+    confirmPayProcess.setProgram("python3");
     QStringList arguments;
     qDebug() << "-----------------------------------";
-        qDebug() << (this->targetRow);
-    arguments << "E:/CFSW/app/Tools/CheckQRPayment.py" << this->targetRow;
+    qDebug() << QDir::currentPath();
+    arguments << QString(QDir::currentPath() + "/Tools/CheckQRPayment.py") << this->targetRow;
     confirmPayProcess.setArguments(arguments);
     confirmPayProcess.start();
     confirmPayProcess.waitForFinished(-1);
 
-    qDebug() << (this->targetRow);
     qDebug() << "Acess Paycheck sheet exit with: " << confirmPayProcess.exitCode();
     QString receiveData = confirmPayProcess.readAllStandardOutput();
     if(receiveData.isEmpty()) {
@@ -40,9 +39,9 @@ void Worker::doWork(const int &refCash, const QString &refDateTime)
 void Worker::setTargetRow()
 {
     QProcess findTargetRowProcess;
-    findTargetRowProcess.setProgram("python");
+    findTargetRowProcess.setProgram("python3");
     QStringList arguments;
-    arguments << "E:/CFSW/app/Tools/GetTargetRow.py";
+    arguments << QString(QDir::currentPath() + "/Tools/GetTargetRow.py");
     findTargetRowProcess.setArguments(arguments);
     findTargetRowProcess.start();
     findTargetRowProcess.waitForFinished(-1);
@@ -53,10 +52,12 @@ void Worker::setTargetRow()
 void Worker::setup()
 {
     QProcess confirmPayProcess;
-    confirmPayProcess.setProgram("python");
+    confirmPayProcess.setProgram("python3");
     QStringList arguments;
-    arguments << "E:/CFSW/app/Tools/ToolManager.py";
+    qDebug() << "-----------------------------------";
+    arguments << QString(QDir::currentPath() + "/Tools/ToolManager.py");
     confirmPayProcess.setArguments(arguments);
     confirmPayProcess.start();
     confirmPayProcess.waitForFinished(-1);
+    qDebug() << "Acess Paycheck sheet exit with: " << confirmPayProcess.exitCode();
 }
