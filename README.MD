@@ -13,4 +13,5 @@ CFSW (Coffee Software) is a comprehensive solution designed to streamline operat
 - **Discount Programs**: Apply discounts during checkout according to programs set by the manager in the database.
 
 ## CI/CD/CT Pipeline
+![cicd_flow](https://github.com/user-attachments/assets/27da7815-2587-4428-86fb-ec192a7b925b)
 - **TODO
