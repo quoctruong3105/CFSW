@@ -4,7 +4,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV QT_QPA_PLATFORM=xcb
 ENV DISPLAY=:1
 
-# Install dependencies for Qt Application
+###########################################
+# Install dependencies for Qt Application #
+###########################################
+
 RUN apt-get update && \
     apt-get install -y \
     build-essential \
@@ -26,9 +29,10 @@ RUN apt-get update && \
     x11vnc \
     python3.10 \
     python3-pip \
-    && pip3 install google-auth google-auth-oauthlib google-api-python-client \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install google-auth google-auth-oauthlib google-api-python-client
 
 WORKDIR /app
 
@@ -52,8 +56,3 @@ WORKDIR /app/build
 
 # VNC port
 EXPOSE 5900
-
-# Start Xvfb with two screens, launch VNC server, and CFSW app
-# CMD Xvfb :1 -screen 0 1920x1080x24 & \
-#     x11vnc -display :1 -forever -nopw -rfbport 5900 & \
-#     ./CFSW

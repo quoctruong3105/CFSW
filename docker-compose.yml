@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  cfsw:
+    image: hicfsw:1.0
+    container_name: cfsw
+    build:
+      context: .
+      dockerfile: Dockerfile_cfsw
+    volumes:
+      - E:/CFSW/local/creds:/app/build/creds
+    ports:
+      - "5900:5900"
+    networks:
+      - cfsw_network
+    command: [ "sh", "-c", "Xvfb :1 -screen 0 1920x1080x24 & \
+                  x11vnc -display :1 -forever -nopw -rfbport 5900 & \
+                  ./CFSW" ]
+
+  test_box:
+    image: hitest:1.0
+    build:
+      context: .
+      dockerfile: Dockerfile_test
+    container_name: test_box
+    depends_on:
+      - cfsw
+    volumes:
+      - ./test/result:/test/result
+    networks:
+      - cfsw_network
+    command: [ "sh", "-c", "Xvfb :99 -screen 0 1920x1080x24 & \
+      vncviewer cfsw:5900 & \
+      robot -d result/ suite/test.robot" ]
+
+  # backend_db:
+  #   image: postgres:15
+  #   container_name: pg_data
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #   restart: unless-stopped
+  #   network_mode: host
+  #   volumes:
+  #     - ./pg_data/postgresql.conf:/etc/postgresql/postgresql.conf
+  #     - ./pg_data/pg_hba.conf:/etc/postgresql/pg_hba.conf
+  #     - ./app/data:/var/lib/postgresql/data
+  #   command: postgres -c 'config_file=/etc/postgresql/postgresql.conf' -c 'hba_file=/etc/postgresql/pg_hba.conf'
+
+networks:
+  cfsw_network:
+    driver: bridge
