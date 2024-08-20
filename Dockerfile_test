@@ -9,14 +9,18 @@ RUN apt-get update && \
     python3.10 \
     python3-pip \
     xvfb \
-    scrot \
-    xdotool \
     tigervnc-viewer \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install robotframework
+RUN pip3 install robotframework robotframework-sikulixlibrary
 
+RUN mkdir -p /opt/sikulix
+WORKDIR /opt/sikulix
+RUN wget https://launchpad.net/sikuli/sikulix/2.0.5/+download/sikulixide-2.0.5-lux.jar -O sikulix.jar
+
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
+ENV SIKULI_HOME=/opt/sikulix
 ENV DISPLAY=:99
 
 WORKDIR /test
