@@ -1,11 +1,12 @@
 import cv2
+import SikuliXLibrary
 
 # Load the image
-image = cv2.imread('E:/CFSW/local/template/screenshot.png')
+image = cv2.imread('E:/CFSW/local/template/screenshot_5.png')
 
 # Set the desired window resolution (width and height)
-desired_width = 2560
-desired_height = 1440
+desired_width = 1920
+desired_height = 1080
 
 # Resize the image to the desired resolution
 resized_image = cv2.resize(image, (desired_width, desired_height))
